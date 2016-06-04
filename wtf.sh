@@ -7,11 +7,39 @@ declare -A HTTP_HEADERS # hashtable of http headers
 function log {
     echo "[`date`] $@" 1>&2
 }
+
 urldecode() {
     # urldecode <string>
 
     local url_encoded="${1//+/ }"
     printf '%b' "${url_encoded//%/\\x}"
+}
+
+function include_page {
+    # include_page <pathname>
+    local pathname=$1
+    while read -r line; do
+        # check if we're in a script line or not ($ at the beginning implies script line)
+        # you can't just assign to this in bash, because reasons?
+        if [[ "$" = ${line:0:1} ]]
+        then
+            is_script=true;
+        else
+            is_script=false;
+        fi
+        # execute the line.
+        if [[ $is_script = true ]]
+        then
+            cmd="${cmd} ${line#"$"}"
+        else
+            if [[ -n $cmd ]]
+            then
+                eval $cmd
+                cmd=""
+            fi
+            echo $line
+        fi
+    done < ${pathname}
 }
 
 function handle_connection {
@@ -39,7 +67,6 @@ function handle_connection {
             break
         else
             a=($line)
-            log "HTTP_HEADER: ${a[*]}"
             key=${a[0]%?}
             value=${a[@]:1}
             HTTP_HEADERS[$key]=$value
@@ -75,28 +102,7 @@ function handle_connection {
         printf "\r\n\r\n"
         if [[ -f ${requested_path} ]]
         then
-            while read -r line; do
-                # check if we're in a script line or not ($ at the beginning implies script line)
-                # you can't just assign to this in bash, because reasons?
-                if [[ "$" = ${line:0:1} ]]
-                then
-                    is_script=true;
-                else
-                    is_script=false;
-                fi
-                # execute the line.
-                if [[ $is_script = true ]]
-                then
-                    cmd="${cmd} ${line#"$"}"
-                else
-                    if [[ -n $cmd ]]
-                    then
-                        eval $cmd
-                        cmd=""
-                    fi
-                    echo $line
-                fi
-            done < ${requested_path}
+            include_page ${requested_path};
         else # handle directory listing if it isn't a file
             echo "<h3>Index of ${request[1]}</h3>"
             echo "<ul>"
