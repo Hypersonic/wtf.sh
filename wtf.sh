@@ -15,32 +15,41 @@ urldecode() {
     printf '%b' "${url_encoded//%/\\x}"
 }
 
+max_page_include_depth=64
+page_include_depth=0
 function include_page {
     # include_page <pathname>
     local pathname=$1
     local cmd=""
-    while read -r line; do
-        # check if we're in a script line or not ($ at the beginning implies script line)
-        # you can't just assign to this in bash, because reasons?
-        if [[ "$" = ${line:0:1} ]]
-        then
-            is_script=true;
-        else
-            is_script=false;
-        fi
-        # execute the line.
-        if [[ $is_script = true ]]
-        then
-            cmd=$(printf "${cmd}\n${line#"$"}")
-        else
-            if [[ -n $cmd ]]
+    page_include_depth=$(($page_include_depth+1))
+    log "At include depth: $page_include_depth"
+    if [[ $page_include_depth -lt $max_page_include_depth ]]
+    then
+        while read -r line; do
+            # check if we're in a script line or not ($ at the beginning implies script line)
+            # you can't just assign to this in bash, because reasons?
+            if [[ "$" = ${line:0:1} ]]
             then
-                eval "$cmd"
-                cmd=""
+                is_script=true;
+            else
+                is_script=false;
             fi
-            echo $line
-        fi
-    done < ${pathname}
+            # execute the line.
+            if [[ $is_script = true ]]
+            then
+                cmd=$(printf "${cmd}\n${line#"$"}")
+            else
+                if [[ -n $cmd ]]
+                then
+                    eval "$cmd"
+                    cmd=""
+                fi
+                echo $line
+            fi
+        done < ${pathname}
+    else
+        echo "<p>Max include depth exceeded!<p>"
+    fi
 }
 
 function handle_connection {
