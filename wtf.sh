@@ -18,6 +18,7 @@ urldecode() {
 function include_page {
     # include_page <pathname>
     local pathname=$1
+    local cmd=""
     while read -r line; do
         # check if we're in a script line or not ($ at the beginning implies script line)
         # you can't just assign to this in bash, because reasons?
@@ -30,11 +31,11 @@ function include_page {
         # execute the line.
         if [[ $is_script = true ]]
         then
-            cmd="${cmd} ${line#"$"}"
+            cmd=$(printf "${cmd}\n${line#"$"}")
         else
             if [[ -n $cmd ]]
             then
-                eval $cmd
+                eval "$cmd"
                 cmd=""
             fi
             echo $line
