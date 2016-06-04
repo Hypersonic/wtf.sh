@@ -22,7 +22,6 @@ function include_page {
     local pathname=$1
     local cmd=""
     page_include_depth=$(($page_include_depth+1))
-    log "At include depth: $page_include_depth"
     if [[ $page_include_depth -lt $max_page_include_depth ]]
     then
         while read -r line; do
