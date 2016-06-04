@@ -75,8 +75,6 @@ function handle_connection {
         printf "\r\n\r\n"
         if [[ -f ${requested_path} ]]
         then
-            #TODO: inline script execution
-            #TODO: multiline script execution
             while read -r line; do
                 # check if we're in a script line or not ($ at the beginning implies script line)
                 # you can't just assign to this in bash, because reasons?
