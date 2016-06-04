@@ -1,0 +1,13 @@
+<html>
+    <body>
+    <h1>URL_PARAMS</h1>
+$ for i in ${!URL_PARAMS[@]}; do
+$   echo "<p>$i = ${URL_PARAMS[$i]}</p>";
+$ done
+<hr>
+    <h1>HTTP_HEADERS</h1>
+$ for i in ${!HTTP_HEADERS[@]}; do
+$   echo "<p>$i = ${HTTP_HEADERS[$i]}</p>";
+$ done
+    </body>
+</html>
