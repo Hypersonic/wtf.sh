@@ -24,6 +24,7 @@ function include_page {
     page_include_depth=$(($page_include_depth+1))
     if [[ $page_include_depth -lt $max_page_include_depth ]]
     then
+        local line;
         while read -r line; do
             # check if we're in a script line or not ($ at the beginning implies script line)
             [[ "$" = ${line:0:1} ]]
