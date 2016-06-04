@@ -26,15 +26,11 @@ function include_page {
     then
         while read -r line; do
             # check if we're in a script line or not ($ at the beginning implies script line)
-            # you can't just assign to this in bash, because reasons?
-            if [[ "$" = ${line:0:1} ]]
-            then
-                is_script=true;
-            else
-                is_script=false;
-            fi
+            [[ "$" = ${line:0:1} ]]
+            is_script=$?;
+
             # execute the line.
-            if [[ $is_script = true ]]
+            if [[ $is_script = 0 ]]
             then
                 cmd=$(printf "${cmd}\n${line#"$"}")
             else
