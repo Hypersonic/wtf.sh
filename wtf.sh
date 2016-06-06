@@ -2,6 +2,7 @@
 
 VERSION="0.0.0.0.1 \"alphaest of bets\""
 declare -A URL_PARAMS # hashtable of url parameters
+declare -A POST_PARAMS # hashtable of post parameters
 declare -A HTTP_HEADERS # hashtable of http headers
 
 function log {
@@ -62,22 +63,38 @@ function handle_connection {
         done
     fi
 
-    path=$(echo $path | cut -d\? -f1) # strip url parameters
     request=($method $path $version)
-    requested_path=$(pwd)/${request[1]}
+    path=$(echo $path | cut -d\? -f1) # strip url parameters
+    requested_path=$(pwd)/${path}
 
     # parse headers
     while read line; do
-        if [[ $line == `printf "\x0d\x0a"` || $line == `printf "\x0a"` ]]
+        if [[ $line == `echo -n $'\x0d\x0a'` || $line == `echo -n $'\x0a'` ]]
         then
             break
         else
             a=($line)
             key=${a[0]%?}
             value=${a[@]:1}
-            HTTP_HEADERS[$key]=$value
+            HTTP_HEADERS[$key]=${value:0:-1}; # remove \r from end
         fi
     done
+    
+    if [[ $method == "POST" ]]
+    then
+        log "Reading one more...";
+        local line;
+        local n;
+        n=${HTTP_HEADERS['Content-Length']};
+        read -n$n -r line;
+        log "POST params: $line";
+        params=($(echo $line | sed "s/\&/ /g"))
+        for param in ${params[@]}; do
+            key=$(echo $param | cut -d\= -f1)
+            value=$(echo $param | cut -d\= -f2)
+            POST_PARAMS[$key]=$(urldecode $value)
+        done
+    fi
 
     # if a directory is requested, append index.html
     if [[ -d ${requested_path} ]]
