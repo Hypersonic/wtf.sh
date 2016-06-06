@@ -82,12 +82,11 @@ function handle_connection {
     
     if [[ $method == "POST" ]]
     then
-        log "Reading one more...";
+        # TODO: handle multipart bodies
         local line;
         local n;
         n=${HTTP_HEADERS['Content-Length']};
         read -n$n -r line;
-        log "POST params: $line";
         params=($(echo $line | sed "s/\&/ /g"))
         for param in ${params[@]}; do
             key=$(echo $param | cut -d\= -f1)
