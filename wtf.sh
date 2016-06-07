@@ -28,7 +28,8 @@ function include_page {
         local line;
         while read -r line; do
             # check if we're in a script line or not ($ at the beginning implies script line)
-            [[ "$" = ${line:0:1} ]]
+            # also, our extension needs to be .wtf
+            [[ "$" = ${line:0:1} && ${pathname:(-4)} = '.wtf' ]]
             is_script=$?;
 
             # execute the line.
