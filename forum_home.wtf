@@ -1,0 +1,15 @@
+$ # set ft=wtf
+<html>
+<body>
+    <h1>Sick Forum Bro</h1>
+    <a href=/new_post.wtf>New Post</a>
+    <h3>Posts:</h3>
+    <ol>
+$ for post_file in `ls posts | sort -n`; do
+$   post_file=$(basename $post_file);
+$   post_title=$(head -n 1 < posts/$post_file);
+$   echo "<li><a href=\"/post.wtf?post=$post_file\">$post_title</a></li>";
+$ done;
+    </ol>
+</body>
+</html>

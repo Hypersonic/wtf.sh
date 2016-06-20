@@ -9,5 +9,9 @@ $ done
 $ for i in ${!HTTP_HEADERS[@]}; do
 $   echo "<p>$i = ${HTTP_HEADERS[$i]}</p>";
 $ done
+    <h1>COOKIES</h1>
+$ for i in ${!COOKIES[@]}; do
+$   echo "<p>$i = ${COOKIES[$i]}</p>";
+$ done
     </body>
 </html>

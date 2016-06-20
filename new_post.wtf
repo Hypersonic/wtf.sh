@@ -1,0 +1,17 @@
+$ # set ft=wtf
+<html>
+<pre>
+$ if [[ $method = 'POST' ]]
+$ then
+$   post_id=$(($(ls posts | sort -n | tail -n 1) + 1));
+$   echo "${POST_PARAMS['title']}" > "posts/${post_id}";
+$   echo "${POST_PARAMS['text']}" >> "posts/${post_id}";
+$   redirect "/post.wtf?post=${post_id}";
+$ fi
+</pre>
+<form method=POST>
+<input type=text name=title placeholder="Post Title"></input><br>
+<textarea name=text placeholder="Post Text"></textarea><br>
+<button type=submit name=submit>Submit</button>
+</form>
+</html>

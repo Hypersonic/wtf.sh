@@ -1,9 +1,12 @@
 #!/usr/local/bin/bash
 
+source lib.sh # import stdlib
+
 VERSION="0.0.0.0.1 \"alphaest of bets\""
 declare -A URL_PARAMS # hashtable of url parameters
 declare -A POST_PARAMS # hashtable of post parameters
 declare -A HTTP_HEADERS # hashtable of http headers
+declare -A COOKIES # hashtable of cookies
 
 function log {
     echo "[`date`] $@" 1>&2
@@ -69,7 +72,7 @@ function handle_connection {
     requested_path=$(pwd)/${path}
 
     # parse headers
-    while read line; do
+    while read -r line; do
         if [[ $line == `echo -n $'\x0d\x0a'` || $line == `echo -n $'\x0a'` ]]
         then
             break
@@ -80,6 +83,16 @@ function handle_connection {
             HTTP_HEADERS[$key]=${value:0:-1}; # remove \r from end
         fi
     done
+
+    # parse out cookie values, if they exist
+    if contains "Cookie" "${!HTTP_HEADERS[@]}"
+    then
+        while read -d ';' -r cookie; do
+            local key=$(echo $cookie | cut -d\= -f1);
+            local value=$(echo $cookie | cut -d\= -f2);
+            COOKIES[${key}]=${value};
+        done <<< "${HTTP_HEADERS['Cookie']};" # append a ; so we still get the last field -- read drops the last thing >_<
+    fi
     
     if [[ $method == "POST" ]]
     then

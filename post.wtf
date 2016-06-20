@@ -1,0 +1,14 @@
+$ # set ft=wtf
+<html>
+<body>
+$ if [[ ${URL_PARAMS['post']} = "" ]]
+$ then
+$   echo "Pls give a post id";
+$ else
+$   title=$(head -n 1 < posts/${URL_PARAMS['post']});
+$   body=$(tail -n +2 < posts/${URL_PARAMS['post']});
+$   echo "<p>$title</p>";
+$   echo "<p>$body</p>";
+$ fi;
+</body>
+</html>
