@@ -20,6 +20,7 @@ function set_cookie {
     local value="$2";
     local expiry=$(date -v "+1d"); # expire 1 day from now
     echo "<script>document.cookie = '${key}=${value}; expires=${expiry}; path=/';</script>";
+    ${COOKIES[$key]}="${value}";
 }
 
 function get_cookie {
