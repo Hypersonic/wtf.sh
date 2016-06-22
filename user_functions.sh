@@ -82,7 +82,6 @@ function get_users_posts {
     local username=$1;
     local post;
     for post in posts/*; do
-        log ${username} $(head -n 1 ${post});
         if [[ $(head -n 1 ${post}) = ${username} ]]
         then
             echo $(basename ${post});
