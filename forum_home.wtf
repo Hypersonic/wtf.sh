@@ -1,11 +1,18 @@
 $ # set ft=wtf
 <html>
+$ source user_functions.sh
 <body>
     <h1>Sick Forum Bro</h1>
     <a href=/new_post.wtf>New Post</a>
+$ if is_logged_in
+$ then
+$   echo "<p>Hi, ${COOKIES['USERNAME']}. <a href='/logout.wtf'>Logout</a></p>"
+$ else
+$   echo "<p>You're not logged in. <a href='/login.wtf'>Login</a></p>"
+$ fi
     <h3>Posts:</h3>
     <ol>
-$ for post_file in `ls posts | sort -n`; do
+$ for post_file in `ls posts`; do
 $   post_file=$(basename $post_file);
 $   post_title=$(head -n 1 < posts/$post_file);
 $   echo "<li><a href=\"/post.wtf?post=$post_file\">$post_title</a></li>";

@@ -89,7 +89,7 @@ function handle_connection {
     then
         while read -d ';' -r cookie; do
             local key=$(echo $cookie | cut -d\= -f1);
-            local value=$(echo $cookie | cut -d\= -f2);
+            local value=${cookie#*=};
             COOKIES[${key}]=${value};
         done <<< "${HTTP_HEADERS['Cookie']};" # append a ; so we still get the last field -- read drops the last thing >_<
     fi
