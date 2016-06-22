@@ -1,14 +1,17 @@
 $ # set ft=wtf
 <html>
 <body>
-$ if [[ ${URL_PARAMS['post']} = "" ]]
+$ source user_functions.sh
+$ if contains 'post' ${!URL_PARAMS[@]} && file_exists "posts/${URL_PARAMS['post']}"
 $ then
-$   echo "Pls give a post id";
-$ else
-$   title=$(head -n 1 < posts/${URL_PARAMS['post']} | htmlentities);
-$   body=$(tail -n +2 < posts/${URL_PARAMS['post']} | htmlentities);
+$   poster=$(nth_line 1 < posts/${URL_PARAMS['post']} | htmlentities);
+$   title=$(nth_line 2 < posts/${URL_PARAMS['post']} | htmlentities);
+$   body=$(tail -n +3 < posts/${URL_PARAMS['post']} | htmlentities);
+$   echo "<p>Posted by <a href=\"/profile.wtf?user=$(basename $(find_user_file ${poster}))\">${poster}</a></p>";
 $   echo "<p>$title</p>";
 $   echo "<p>$body</p>";
+$ else
+$   echo "Pls give a (valid) post id";
 $ fi;
 </body>
 </html>

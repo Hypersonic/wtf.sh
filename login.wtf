@@ -13,7 +13,7 @@ $       if $(check_password ${username} ${password})
 $       then
 $           # correct pass
 $           set_cookie "USERNAME" ${username};
-$           set_cookie "TOKEN" $(tail -n1 ${userfile});
+$           set_cookie "TOKEN" $(nth_line 3 ${userfile});
 $           redirect "/forum_home.wtf";
 $       else 
 $           # incorrect pass

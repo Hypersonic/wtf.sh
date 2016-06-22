@@ -14,7 +14,7 @@ $ fi
     <ol>
 $ for post_file in `ls posts`; do
 $   post_file=$(basename $post_file);
-$   post_title=$(head -n 1 < posts/$post_file | htmlentities);
+$   post_title=$(nth_line 2 < posts/$post_file | htmlentities);
 $   echo "<li><a href=\"/post.wtf?post=$post_file\">$post_title</a></li>";
 $ done;
     </ol>

@@ -10,6 +10,23 @@ function contains {
     return 1;
 }
 
+function file_exists {
+    local file=$1;
+    stat ${file} > /dev/null;
+}
+
+function nth_line {
+    local n=$1;
+    local filename;
+    if [[ $# != 1 ]]
+    then
+        filename=$2;
+        (head -n $n | tail -n 1) < $filename;
+    else
+        head -n $n | tail -n 1;
+    fi
+}
+
 function redirect {
     local target="$1";
     echo "<script>window.location.href='${target}';</script>";

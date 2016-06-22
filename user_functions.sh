@@ -14,6 +14,7 @@ function generate_token {
 
 function find_user_file {
     local username=$1;
+    local f;
     for f in users/*; do
         if [[ $(head -n 1 $f) = ${username} ]]
         then
@@ -75,4 +76,16 @@ function is_logged_in {
     else
         return 1;
     fi
+}
+
+function get_users_posts {
+    local username=$1;
+    local post;
+    for post in posts/*; do
+        log ${username} $(head -n 1 ${post});
+        if [[ $(head -n 1 ${post}) = ${username} ]]
+        then
+            echo $(basename ${post});
+        fi
+    done
 }

@@ -1,0 +1,15 @@
+$ # set ft=wtf
+$ source user_functions.sh
+<html>
+$ if contains 'user' ${!URL_PARAMS[@]} && file_exists "users/${URL_PARAMS['user']}"
+$ then
+$   local username=$(head -n 1 users/${URL_PARAMS['user']});
+$   echo "<h3>${username}'s posts:</h3>";
+$   echo "<ol>";
+$   get_users_posts ${username} | while read -r post; do
+$       echo "<li><a href=\"/post.wtf?post=${post}\">$(nth_line 2 \"posts/${post}\")</a></li>";
+$   done 
+$   echo "</ol>";
+$   # TODO: print first flag if you're logged in as admin
+$ fi
+</html>
