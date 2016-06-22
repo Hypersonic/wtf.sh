@@ -33,3 +33,8 @@ function remove_cookie {
     echo "<script>document.cookie = '${key}=riperino; expires=${expiry}; path=/';</script>";
     unset COOKIES[$key];
 }
+
+# take text on input, transform any html special chars to the corresponding entities
+function htmlentities {
+    sed "s/\&/\&amp;/g" | sed "s/</\&lt;/g" | sed "s/>/\&gt;/g";
+}

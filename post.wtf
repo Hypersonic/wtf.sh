@@ -5,8 +5,8 @@ $ if [[ ${URL_PARAMS['post']} = "" ]]
 $ then
 $   echo "Pls give a post id";
 $ else
-$   title=$(head -n 1 < posts/${URL_PARAMS['post']});
-$   body=$(tail -n +2 < posts/${URL_PARAMS['post']});
+$   title=$(head -n 1 < posts/${URL_PARAMS['post']} | htmlentities);
+$   body=$(tail -n +2 < posts/${URL_PARAMS['post']} | htmlentities);
 $   echo "<p>$title</p>";
 $   echo "<p>$body</p>";
 $ fi;
