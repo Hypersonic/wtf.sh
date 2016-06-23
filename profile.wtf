@@ -10,6 +10,10 @@ $   get_users_posts ${username} | while read -r post; do
 $       echo "<li><a href=\"/post.wtf?post=${post}\">$(nth_line 2 \"posts/${post}\")</a></li>";
 $   done 
 $   echo "</ol>";
-$   # TODO: print first flag if you're logged in as admin
+$   # first flag -- you need to be logged in as admin and visit admin's profile page.
+$   if is_logged_in && [[ $(cat users/${URL_PARAMS['user']} | nth_line 1) = 'admin' ]] && [[ ${COOKIES['USERNAME']} = 'admin' ]]
+$   then
+$       cat flag1.txt; # TODO: Switch this to running a get_flag1 command, which setuids to read the flag
+$   fi
 $ fi
 </html>
