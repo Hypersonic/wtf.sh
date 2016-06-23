@@ -35,15 +35,15 @@ function create_user {
 
     mkdir users 2> /dev/null; # make sure users directory exists
 
-    local user_id=$(basename $(mktemp XXXXX));
+    local user_id=$(basename $(mktemp users/XXXXX));
 
     # user files look like:
     #   username
     #   hashed_pass
     #   token
-    echo "${username}" > users/${user_id};
-    echo "${hashed_pass}" >> users/${user_id};
-    echo "${token}" >> users/${user_id};
+    echo "${username}" > "users/${user_id}";
+    echo "${hashed_pass}" >> "users/${user_id}";
+    echo "${token}" >> "users/${user_id}";
 }
 
 function check_password {
