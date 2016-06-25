@@ -13,5 +13,6 @@ $   echo "<p>$body</p>";
 $ else
 $   echo "Pls give a (valid) post id";
 $ fi;
+<a href="/">Back</a>
 </body>
 </html>
