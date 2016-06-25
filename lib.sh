@@ -32,10 +32,25 @@ function redirect {
     echo "<script>window.location.href='${target}';</script>";
 }
 
+# Hacky way of figuring out which date command is appropriate,
+# depending if we're on BSD or GNU coreutils
+YESTERDAY_CMD="";
+TOMORROW_CMD="";
+if man date | grep "GNU"
+then
+    # Using GNU date
+    TOMORROW_CMD="date -d 'tomorrow'";
+    YESTERDAY_CMD="date -d 'yesterday'";
+else
+    # Using BSD date
+    TOMORROW_CMD="date -v +1d";
+    YESTERDAY_CMD="date -v -1d";
+fi
+
 function set_cookie {
     local key="$1";
     local value="$2";
-    local expiry=$(date -v "+1d"); # expire 1 day from now
+    local expiry=$(${TOMORROW_CMD});
     echo "<script>document.cookie = '${key}=${value}; expires=${expiry}; path=/';</script>";
     COOKIES[$key]="${value}";
 }
@@ -46,7 +61,7 @@ function get_cookie {
 
 function remove_cookie {
     local key="$1";
-    local expiry=$(date -v "-1d"); # expiration dates in the past delete cookies
+    local expiry=$(${YESTERDAY_CMD}); # expiration dates in the past delete cookies
     echo "<script>document.cookie = '${key}=riperino; expires=${expiry}; path=/';</script>";
     unset COOKIES[$key];
 }
