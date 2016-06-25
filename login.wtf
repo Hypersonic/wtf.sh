@@ -24,6 +24,7 @@ $       # user doesn't exist
 $       echo "<h3>Sorry, user ${username} doesn't exist :(<br>Try again?</h3>"
 $   fi
 $ fi
+<h3>Login</h3>
 <form method=POST>
 <input type=text name=username placeholder="username"></input><br>
 <input type=password name=password placeholder="password"></input><br>
