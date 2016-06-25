@@ -14,7 +14,7 @@ $       then
 $           # correct pass
 $           set_cookie "USERNAME" ${username};
 $           set_cookie "TOKEN" $(nth_line 3 ${userfile});
-$           redirect "/forum_home.wtf";
+$           redirect "/";
 $       else 
 $           # incorrect pass
 $           echo "<h3>Sorry, wrong password for user ${username}:(<br>Try again?</h3>";

@@ -5,7 +5,7 @@ $ if is_logged_in
 $ then 
 $   remove_cookie 'USERNAME';
 $   remove_cookie 'TOKEN';
-$   redirect "/forum_home.wtf";
+$   redirect "/";
 $ else
 $   echo "<h3>You need to be logged in to log out, bud.</h3>";
 $ fi

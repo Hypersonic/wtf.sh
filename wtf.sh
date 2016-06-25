@@ -1,4 +1,4 @@
-#!/usr/local/bin/bash
+#!/usr/bin/env bash
 
 source lib.sh # import stdlib
 
@@ -109,13 +109,18 @@ function handle_connection {
         done
     fi
 
-    # if a directory is requested, append index.html
+    # if a directory is requested, try each of the following, in order
+    # index.wtf, index.html
+    local index_fills=("index.wtf" "index.html");
     if [[ -d ${requested_path} ]]
     then
-        if [[ -e "${requested_path}/index.html" ]]
-        then
-            requested_path="${requested_path}/index.html"
-        fi
+        for i in ${index_fills}; do
+            if [[ -e "${requested_path}/${i}" ]]
+            then
+                requested_path="${requested_path}/${i}";
+                break;
+            fi
+        done
     fi
 
     # check for possible directory traversals / other undesirable path elements by
