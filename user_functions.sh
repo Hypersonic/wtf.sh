@@ -9,7 +9,7 @@ function hash_password {
 
 # generate a random token, base64 encoded
 function generate_token {
-    cat /dev/urandom | head -c 64 | base64;
+    cat /dev/urandom | head -c 64 | base64 --wrap=0;
 }
 
 function find_user_file {
