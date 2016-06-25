@@ -58,24 +58,20 @@ function check_password {
 
     local hashed_pass=$(hash_password ${password});
     local correct_hash=$(head -n2 ${userfile} | tail -n1);
-    if [[ ${hashed_pass} = ${correct_hash} ]]
-    then
-        return 0;
-    else
-        return 1;
-    fi
+    [[ ${hashed_pass} = ${correct_hash} ]];
+    return $?;
 }
 
 function is_logged_in {
     contains 'TOKEN' ${!COOKIES[@]} && contains 'USERNAME' ${!COOKIES[@]};
     local has_cookies=$?
     local userfile=$(find_user_file ${COOKIES['USERNAME']});
-    if [[ ${has_cookies} && ${userfile} != 'NONE' && $(tail -n1 ${userfile} 2>/dev/null) = ${COOKIES['TOKEN']} && $(head -n1 ${userfile} 2>/dev/null) = ${COOKIES['USERNAME']} ]]
-    then
-        return 0;
-    else
-        return 1;
-    fi
+    [[ ${has_cookies} \
+        && ${userfile} != 'NONE' \
+        && $(tail -n1 ${userfile} 2>/dev/null) = ${COOKIES['TOKEN']} \
+        && $(head -n1 ${userfile} 2>/dev/null) = ${COOKIES['USERNAME']} \
+    ]];
+    return $?;
 }
 
 function get_users_posts {
