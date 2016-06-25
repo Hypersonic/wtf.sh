@@ -8,8 +8,9 @@ function hash_password {
 }
 
 # generate a random token, base64 encoded
+# on GNU base64 wraps at 76 characters, so we need to pass --wrap=0
 function generate_token {
-    cat /dev/urandom | head -c 64 | base64 --wrap=0;
+    cat /dev/urandom | head -c 64 | (base64 --wrap=0 || base64);
 }
 
 function find_user_file {
