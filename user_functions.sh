@@ -35,6 +35,7 @@ function create_user {
     local token=$(generate_token);
 
     mkdir users 2> /dev/null; # make sure users directory exists
+    touch users/.nolist; # make sure that the users dir can't be listed
 
     local user_id=$(basename $(mktemp users/XXXXX));
 

@@ -6,6 +6,7 @@ $ then
 $   if is_logged_in
 $   then
 $       mkdir posts 2> /dev/null;
+$       touch posts/.nolist;
 $       post_id=$(basename $(mktemp posts/XXXXX));
 $       echo "${COOKIES['USERNAME']}" > "posts/${post_id}";
 $       echo "${POST_PARAMS['title']}" >> "posts/${post_id}";
