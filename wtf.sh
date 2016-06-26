@@ -151,7 +151,7 @@ function handle_connection {
             printf "\r\n\r\n"
             echo "<h3>Index of ${request[1]}</h3>"
             echo "<ul>"
-            for d in `ls ${requested_path}`; do
+            for d in ${requested_path}/*; do
                 size_info=($(du -h ${requested_path} | tail -n 1))
                 log ${d}
                 echo "<li><a href="/${request[1]#"/"}${d}">${d}</a>: ${size_info[0]}</li>"
