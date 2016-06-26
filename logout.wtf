@@ -1,4 +1,4 @@
-$ # set ft=wtf
+$ # vim: ft=wtf
 <html>
 $ source user_functions.sh
 $ if is_logged_in

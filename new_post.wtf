@@ -1,16 +1,12 @@
-$ # set ft=wtf
+$ # vim: ft=wtf
 <html>
 $ source user_functions.sh
+$ source post_functions.sh
 $ if [[ $method = 'POST' ]]
 $ then
 $   if is_logged_in
 $   then
-$       mkdir posts 2> /dev/null;
-$       touch posts/.nolist;
-$       post_id=$(basename $(mktemp posts/XXXXX));
-$       echo "${COOKIES['USERNAME']}" > "posts/${post_id}";
-$       echo "${POST_PARAMS['title']}" >> "posts/${post_id}";
-$       echo "${POST_PARAMS['text']}" >> "posts/${post_id}";
+$       post_id=$(create_post "${COOKIES['USERNAME']}" "${POST_PARAMS['title']}" "${POST_PARAMS['text']}");
 $       redirect "/post.wtf?post=${post_id}";
 $   else
 $       echo "<h3>pls login 2 be posting</h3>";
