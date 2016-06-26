@@ -5,11 +5,11 @@ $ if [[ $method = 'POST' ]]
 $ then
 $   local username=${POST_PARAMS['username']};
 $   local password=${POST_PARAMS['password']};
-$   if [[ $(find_user_file ${username}) = 'NONE' ]]
+$   if [[ $(find_user_file "${username}") = 'NONE' ]]
 $   then 
 $       # create user
 $       echo "ok, gonna go make that user... ${username}";
-$       local user_id=$(create_user ${username} ${password});
+$       local user_id=$(create_user "${username}" "${password}");
 $       redirect "/login.wtf";
 $   else
 $       # user already exists
