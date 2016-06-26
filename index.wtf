@@ -12,7 +12,7 @@ $   echo "<p>You're not logged in. <a href='/login.wtf'>Login</a> <a href='/new_
 $ fi
     <h3>Posts:</h3>
     <ol>
-$ for post_file in `ls posts`; do
+$ for post_file in posts/*; do
 $   post_file=$(basename $post_file);
 $   post_title=$(nth_line 2 < posts/$post_file | htmlentities);
 $   post_user=$(nth_line 1 < posts/$post_file | htmlentities);
