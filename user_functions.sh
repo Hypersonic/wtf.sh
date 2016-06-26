@@ -46,6 +46,8 @@ function create_user {
     echo "${username}" > "users/${user_id}";
     echo "${hashed_pass}" >> "users/${user_id}";
     echo "${token}" >> "users/${user_id}";
+
+    echo ${user_id};
 }
 
 function check_password {
