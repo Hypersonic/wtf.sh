@@ -1,15 +1,20 @@
-$ # set ft=wtf
+$ # vim: ft=wtf
 <html>
 <body>
 $ source user_functions.sh
 $ if contains 'post' ${!URL_PARAMS[@]} && file_exists "posts/${URL_PARAMS['post']}"
 $ then
-$   poster=$(nth_line 1 < posts/${URL_PARAMS['post']} | htmlentities);
-$   title=$(nth_line 2 < posts/${URL_PARAMS['post']} | htmlentities);
-$   body=$(tail -n +3 < posts/${URL_PARAMS['post']} | htmlentities);
-$   echo "<p>Posted by <a href=\"/profile.wtf?user=$(basename $(find_user_file ${poster}))\">${poster}</a></p>";
-$   echo "<p>$title</p>";
-$   echo "<p>$body</p>";
+$   post_id=${URL_PARAMS['post']};
+$   for post_file in $(ls posts/${post_id}/* | sort -n); do
+$       echo "<div class=\"post\">";
+$       poster=$(nth_line 1 ${post_file} | htmlentities);
+$       title=$(nth_line 2 ${post_file} | htmlentities);
+$       body=$(tail -n +3 ${post_file} | htmlentities);
+$       echo "<p>Posted by <a href=\"/profile.wtf?user=$(basename $(find_user_file "${poster}"))\">${poster}</a></p>";
+$       echo "<p>$title</p>";
+$       echo "<p>$body</p>";
+$       echo "</div>";
+$   done
 $ else
 $   echo "Pls give a (valid) post id";
 $ fi;
