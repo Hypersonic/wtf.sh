@@ -81,10 +81,10 @@ function is_logged_in {
 function get_users_posts {
     local username=$1;
     local post;
-    for post in posts/*; do
+    for post in posts/*/*; do
         if [[ $(head -n 1 ${post}) = ${username} ]]
         then
-            echo $(basename ${post});
+            echo ${post};
         fi
     done
 }

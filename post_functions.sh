@@ -12,12 +12,12 @@ function create_post {
     mkdir posts 2> /dev/null;
     touch posts/.nolist;
 
-    local post_id=$(basename $(mktemp posts/XXXXX));
+    local post_id=$(basename $(mktemp --directory posts/XXXXX));
 
 
-    echo ${username} > posts/${post_id};
-    echo ${title} >> posts/${post_id};
-    echo ${text} >> posts/${post_id};
+    echo ${username} > posts/${post_id}/1;
+    echo ${title} >> posts/${post_id}/1;
+    echo ${text} >> posts/${post_id}/1;
 
 
     # add to our cache for the homepage
