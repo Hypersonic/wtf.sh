@@ -1,0 +1,39 @@
+$ # vim: ft=wtf
+<html>
+$ source user_functions.sh
+$ if [[ $method = 'POST' ]]
+$ then
+$   if is_logged_in
+$   then
+$       if [[ ${POST_PARAMS['text']} != '' && ${URL_PARAMS['post']} != '' ]]
+$       then
+$           next_post_id=$(($(for d in posts/${URL_PARAMS['post']}/*; do basename $d; done | sort -n | tail -n 1)+1));
+$           next_file="posts/${URL_PARAMS['post']}/${next_post_id}"
+$           echo "${COOKIES['USERNAME']}" > "${next_file}";
+$           echo "RE: $(nth_line 2 < "posts/${URL_PARAMS['post']}/1")" >> "${next_file}";
+$           echo "${POST_PARAMS['text']}" >> "${next_file}";
+$           redirect "/post.wtf?post=${URL_PARAMS['post']}#${next_post_id}";
+$       else
+$           redirect "/reply.wtf?post=${URL_PARAMS['post']}";
+$       fi
+$   else
+$      redirect "/login.wtf"
+$   fi
+$ fi
+
+$ if [[ ${URL_PARAMS['post']} = '' ]] 
+$ then
+$   echo "u need to be replying to a post, you dumdum";
+$ fi
+
+$ if is_logged_in
+$ then
+$   echo "u r logged in, s0 gib reply"
+$ else
+$   redirect "/login.wtf"
+$ fi
+<form method=POST>
+<textarea name=text placeholder="Reply Text"></textarea><br>
+<button type=submit name=submit>Submit</button>
+</form>
+</html>
