@@ -3,10 +3,13 @@
 source lib.sh # import stdlib
 
 VERSION="0.0.0.0.1 \"alphaest of bets\""
+REPLY_HEADERS="X-Powered-By: wtf.sh ${VERSION}"
+
 declare -A URL_PARAMS # hashtable of url parameters
 declare -A POST_PARAMS # hashtable of post parameters
 declare -A HTTP_HEADERS # hashtable of http headers
 declare -A COOKIES # hashtable of cookies
+
 
 function log {
     echo "[`date`] $@" 1>&2
@@ -130,6 +133,7 @@ function handle_connection {
     then
         echo "HTTP/1.1 503 Forbidden"
         echo "Content-Type: text/html"
+        echo "${REPLY_HEADERS}"
         printf "\r\n\r\n"
         echo "<html><title>503</title><body>503 Forbidden</body></html>"
         log "503: ${request[@]}"
@@ -142,12 +146,14 @@ function handle_connection {
         then
             echo "HTTP/1.1 200 OK"
             echo "Content-Type: text/html"
+            echo "${REPLY_HEADERS}"
             printf "\r\n\r\n"
             include_page ${requested_path};
         elif [[ ! -e "${requested_path}/.nolist" ]] # handle directory listing if it isn't a file and no `.nolist` file in the directory
         then
             echo "HTTP/1.1 200 OK"
             echo "Content-Type: text/html"
+            echo "${REPLY_HEADERS}"
             printf "\r\n\r\n"
             echo "<h3>Index of ${request[1]}</h3>"
             echo "<ul>"
@@ -161,6 +167,7 @@ function handle_connection {
         else
             echo "HTTP/1.1 503 Forbidden"
             echo "Content-Type: text/html"
+            echo "${REPLY_HEADERS}"
             printf "\r\n\r\n"
             echo "<h3>I'm sorry, I'm afraid I can't list that directory</h3>"
             echo "<p>It seems that you tried to list a directory with a <code>.nolist</code> file in it.</p>"
@@ -171,6 +178,7 @@ function handle_connection {
     else
         echo "HTTP/1.1 404 Not Found"
         echo "Content-Type: text/html"
+        echo "${REPLY_HEADERS}"
         printf "\r\n\r\n"
         echo "<html><title>404</title><body>404, not found:<code>${request[1]}</code></body></html>"
         log "404: ${request[@]}"
