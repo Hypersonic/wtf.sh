@@ -45,7 +45,7 @@ function include_page {
             else
                 if [[ -n $cmd ]]
                 then
-                    eval "$cmd"
+                    eval "$cmd" || log "Error during execution of ${cmd}";
                     cmd=""
                 fi
                 echo $line
