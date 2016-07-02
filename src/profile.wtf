@@ -7,7 +7,6 @@ $   local username=$(head -n 1 users/${URL_PARAMS['user']});
 $   echo "<h3>${username}'s posts:</h3>";
 $   echo "<ol>";
 $   get_users_posts "${username}" | while read -r post; do
-$       log ${post}
 $       post_slug="$(cut -d/ -f2 <<< "${post}")#$(cut -d/ -f3 <<< "${post}")"
 $       echo "<li><a href=\"/post.wtf?post=${post_slug}\">$(nth_line 2 \"${post}\")</a></li>";
 $   done 
