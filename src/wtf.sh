@@ -188,6 +188,7 @@ function handle_connection {
 
 # start socat on specified port
 function start_server {
+    log "wtf.sh ${VERSION}, starting!";
     socat TCP-LISTEN:$2,fork,readbytes=4096 EXEC:"$1 -r" 2>&1 | tee webserver.log
 }
 
