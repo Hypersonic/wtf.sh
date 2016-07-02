@@ -21,7 +21,7 @@ function nth_line {
     if [[ $# != 1 ]]
     then
         filename=$2;
-        (head -n $n | tail -n 1) < $filename;
+        (head -n $n | tail -n 1) < $filename 2> /dev/null;
     else
         head -n $n | tail -n 1;
     fi
