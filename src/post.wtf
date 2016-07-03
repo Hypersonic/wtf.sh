@@ -10,7 +10,7 @@ $   for post_file in $(ls posts/${post_id}/* | sort -n); do
 $       echo "<div class=\"post\">";
 $       poster=$(nth_line 1 ${post_file} | htmlentities);
 $       title=$(nth_line 2 ${post_file} | htmlentities);
-$       body=$(tail -n +3 ${post_file} | htmlentities);
+$       body=$(tail -n +3 ${post_file} | htmlentities 2> /dev/null);
 $       echo "<p>Posted by <a href=\"/profile.wtf?user=$(basename $(find_user_file "${poster}"))\">${poster}</a></p>";
 $       echo "<p>$title</p>";
 $       echo "<p>$body</p>";

@@ -21,10 +21,10 @@ function nth_line {
     if [[ $# != 1 ]]
     then
         filename=$2;
-        (head -n $n | tail -n 1) < $filename 2> /dev/null;
+        (head -n $n | tail -n 1) < $filename;
     else
         head -n $n | tail -n 1;
-    fi
+    fi 2> /dev/null
 }
 
 function redirect {
