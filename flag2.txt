@@ -1,0 +1,1 @@
+flag{this_is_the_second_flag}

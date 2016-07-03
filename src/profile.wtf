@@ -13,7 +13,7 @@ $   done
 $   echo "</ol>";
 $   if is_logged_in && [[ $(cat "users/${URL_PARAMS['user']}" | nth_line 1) = 'admin' ]] && [[ "${COOKIES['USERNAME']}" = 'admin' ]]
 $   then
-$       cat flag1.txt; # TODO: Switch this to running a get_flag1 command, which setuids to read the flag
+$       get_flag1
 $   fi
 $ fi
 </html>
