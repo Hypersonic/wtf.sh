@@ -45,9 +45,13 @@ RUN chmod 1733 /tmp /var/tmp /dev/shm
 # setup webapp
 COPY ./src /opt/wtf.sh
 COPY ./setup_data.sh /tmp/setup_data.sh
-RUN /tmp/setup_data.sh
 
 RUN chown -R www /opt/wtf.sh
+RUN chmod -R 555 /opt/wtf.sh
+
+RUN /tmp/setup_data.sh
+RUN chmod -R 777 /opt/wtf.sh/posts
+RUN chmod -R 777 /opt/wtf.sh/users
 
 
 CMD su www -c "/opt/wtf.sh/wtf.sh 8000"

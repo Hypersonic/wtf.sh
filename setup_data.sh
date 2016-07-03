@@ -4,7 +4,10 @@ source user_functions.sh
 source post_functions.sh
 
 rm .index_cache.html;
+touch .index_cache.html;
+chmod 777 .index_cache.html;
 
+# gotta get dem sick references in there somewhere :)
 USERS=("admin" \
        # Hackers
        "Acid Burn" "Phantom Phreak" "The Plague" \
