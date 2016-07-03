@@ -45,6 +45,7 @@ RUN chmod 1733 /tmp /var/tmp /dev/shm
 # setup webapp
 COPY ./src /opt/wtf.sh
 COPY ./setup_data.sh /tmp/setup_data.sh
+COPY ./spinup.sh /opt/wtf.sh
 
 RUN chown -R www /opt/wtf.sh
 RUN chmod -R 555 /opt/wtf.sh
@@ -53,5 +54,8 @@ RUN /tmp/setup_data.sh
 RUN chmod -R 777 /opt/wtf.sh/posts
 RUN chmod -R 777 /opt/wtf.sh/users
 
+RUN echo "tmpfs    /tmp/wtf_runtime    tmpfs    nodev,nosuid,size=1G    0    0" >> /etc/fstab
 
-CMD su www -c "/opt/wtf.sh/wtf.sh 8000"
+
+WORKDIR /tmp/wtf_runtime/wtf.sh
+CMD /opt/wtf.sh/spinup.sh
