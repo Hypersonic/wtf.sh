@@ -154,15 +154,19 @@ function handle_connection {
 
     if [[ -e ${requested_path} ]]
     then
-        if [[ -f ${requested_path} && ${requested_path:(-4)} != ".log" ]]
+        if [[ -f ${requested_path} \
+            && ${requested_path:(-4)} != ".log"\
+            && ! -e $(dirname "${requested_path}")/.noread ]] # can't end in .log, can't have .noread in the parent directory
         then
             echo "HTTP/1.1 200 OK"
             echo "Content-Type: text/html"
             echo "${REPLY_HEADERS}"
             printf "\r\n\r\n"
             include_page ${requested_path};
-        elif [[ -d ${requested_path} && ! -e "${requested_path}/.nolist" ]] # handle directory listing if it isn't a file and no `.nolist` file in the directory
+        elif [[ -d ${requested_path} \
+            && ! -e "${requested_path}/.nolist" ]] # handle directory listing if it isn't a file and no `.nolist` file in the directory
         then
+            log "$(dirname "${requested_path}")/.noread"
             echo "HTTP/1.1 200 OK"
             echo "Content-Type: text/html"
             echo "${REPLY_HEADERS}"
@@ -183,7 +187,7 @@ function handle_connection {
             printf "\r\n\r\n"
             echo "<title>503 Forbidden</title>";
             echo "<h3>I'm sorry, I'm afraid I can't let you see that</h3>";
-            echo "<p>It seems that you tried to list a directory with a <code>.nolist</code> file in it, or a forbidden file type.</p>";
+            echo "<p>It seems that you tried to list a directory with a <code>.nolist</code> file in it, or a <code>.noread</code> file in it's parent, or a forbidden file type.</p>";
             echo "<p>If you think this was a mistake, I feel bad for you, son. I got 99 problems, but a 503 ain't one.</p>";
         fi
         log "200: ${request[@]}"

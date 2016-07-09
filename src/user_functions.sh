@@ -52,6 +52,7 @@ function create_user {
 
     mkdir "users_lookup/${username}" 2> /dev/null;
     touch "users_lookup/${username}/.nolist"; # lookup dir for this user can't be readable
+    touch "users_lookup/${username}/.noread"; # don't allow reading the lookup dir
     touch "users_lookup/${username}/posts"; # lookup for posts this user has participated in
     echo "${user_id}" > "users_lookup/${username}/userid"; # create reverse lookup
 
