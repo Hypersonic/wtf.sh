@@ -1,5 +1,18 @@
 #!/usr/bin/env bash
 
+PROFILE=false
+# ~~ PROFILING ~~
+if [[ $PROFILE = true ]]
+then
+    for i in {0..100}; do
+        echo '~~~~~~~~~~~~~~~~~~~~~~~~~~~' 1>&2;
+    done
+    PS4='+ $(date "+%s.%N") (${FUNCNAME}:${LINENO})\011 '
+    exec 3>/tmp/bashprof.$$.log
+    set -x
+fi
+
+
 source lib.sh # import stdlib
 
 VERSION="0.0.0.0.1 \"alphaest of bets\""
@@ -41,7 +54,7 @@ function include_page {
             # execute the line.
             if [[ $is_script = 0 ]]
             then
-                cmd=$(printf "${cmd}\n${line#"$"}")
+                cmd=$(printf "%s\n%s" "${cmd}" "${line#"$"}")
             else
                 if [[ -n $cmd ]]
                 then
@@ -57,6 +70,7 @@ function include_page {
 }
 
 function handle_connection {
+
     # Parse query and any url parameters that may be in the path
     IFS=' ' read method path version
     query=$(echo $path | cut -d\? -f2)
@@ -64,8 +78,7 @@ function handle_connection {
     then
         params=($(echo $query | sed "s/\&/ /g"))
         for param in ${params[@]}; do
-            key=$(echo $param | cut -d\= -f1)
-            value=$(echo $param | cut -d\= -f2)
+            IFS='=' read key value <<< ${param};
             URL_PARAMS[$key]=$(urldecode $value)
         done
     fi
@@ -106,8 +119,7 @@ function handle_connection {
         read -n$n -r line;
         params=($(echo $line | sed "s/\&/ /g"))
         for param in ${params[@]}; do
-            key=$(echo $param | cut -d\= -f1)
-            value=$(echo $param | cut -d\= -f2)
+            IFS='=' read key value <<< ${param};
             POST_PARAMS[$key]=$(urldecode $value)
         done
     fi
