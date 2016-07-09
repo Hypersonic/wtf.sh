@@ -1,18 +1,14 @@
 $ # vim: ft=wtf
 <html>
 $ source user_functions.sh
+$ source post_functions.sh
 $ if [[ $method = 'POST' ]]
 $ then
 $   if is_logged_in
 $   then
 $       if [[ ${POST_PARAMS['text']} != '' && ${URL_PARAMS['post']} != '' ]]
 $       then
-$           curr_id=$(for d in posts/${URL_PARAMS['post']}/*; do basename $d; done | sort -n | tail -n 1);
-$           next_post_id=$((${curr_id}+1));
-$           next_file="posts/${URL_PARAMS['post']}/${next_post_id}"
-$           echo "${COOKIES['USERNAME']}" > "${next_file}";
-$           echo "RE: $(nth_line 2 < "posts/${URL_PARAMS['post']}/1")" >> "${next_file}";
-$           echo "${POST_PARAMS['text']}" >> "${next_file}";
+$           reply "${URL_PARAMS['post']}" "${COOKIES['USERNAME']}" "${POST_PARAMS['text']}"
 $           redirect "/post.wtf?post=${URL_PARAMS['post']}#${next_post_id}";
 $       else
 $           redirect "/reply.wtf?post=${URL_PARAMS['post']}";

@@ -22,6 +22,25 @@ function create_post {
 
     # add to our cache for the homepage
     echo "<li><a href=\"/post.wtf?post=${post_id}\">$(htmlentities <<< ${title})</a> by $(htmlentities <<< ${username})</li>" >> .index_cache.html
+
+    # add post to users' post cache
+    echo "${post_id}" >> "users_lookup/${username}/posts";
+
     echo ${post_id};
 
+}
+
+function reply {
+    local post_id=$1;
+    local username=$2;
+    local text=$3;
+    curr_id=$(for d in posts/${post_id}/*; do basename $d; done | sort -n | tail -n 1);
+    next_reply_id=$((${curr_id}+1));
+    next_file="posts/${post_id}/${next_reply_id}"
+    echo "${username}" > "${next_file}";
+    echo "RE: $(nth_line 2 < "posts/${post_id}/1")" >> "${next_file}";
+    echo "${text}" >> "${next_file}";
+
+    # add post this is in reply to to posts cache
+    echo "${post_id}" >> "users_lookup/${username}/posts";
 }
