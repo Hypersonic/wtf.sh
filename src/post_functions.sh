@@ -10,7 +10,8 @@ function create_post {
 
     # ensure posts dir exists and isn't listable.
     mkdir posts 2> /dev/null;
-    touch posts/.nolist;
+    touch posts/.nolist; # don't allow directory listing on posts
+    touch posts/.noread; # don't allow file reads on post
 
     local post_id=$(basename $(mktemp --directory posts/XXXXX));
 
@@ -18,6 +19,9 @@ function create_post {
     echo ${username} > "posts/${post_id}/1";
     echo ${title} >> "posts/${post_id}/1";
     echo ${text} >> "posts/${post_id}/1";
+
+    touch "posts/${post_id}/.nolist";
+    touch "posts/${post_id}/.noread";
 
 
     # add to our cache for the homepage

@@ -152,11 +152,16 @@ function handle_connection {
         exit 0; # terminate early for 503
     fi
 
-    if [[ -e ${requested_path} ]]
+    [[ ! -e "${requested_path}/.nolist" ]];
+    local can_list=$?;
+    [[ ! -e "$(dirname "${requested_path}")/.noread" ]];
+    local can_read=$?;
+
+    if [[ -e ${requested_path}  ]]
     then
         if [[ -f ${requested_path} \
             && ${requested_path:(-4)} != ".log"\
-            && ! -e $(dirname "${requested_path}")/.noread ]] # can't end in .log, can't have .noread in the parent directory
+            && ${can_read} = 0 ]] # can't end in .log, can't have .noread in the parent directory
         then
             echo "HTTP/1.1 200 OK"
             echo "Content-Type: text/html"
@@ -164,7 +169,7 @@ function handle_connection {
             printf "\r\n\r\n"
             include_page ${requested_path};
         elif [[ -d ${requested_path} \
-            && ! -e "${requested_path}/.nolist" ]] # handle directory listing if it isn't a file and no `.nolist` file in the directory
+            && ${can_list} = 0 ]] # handle directory listing if it isn't a file and no `.nolist` file in the directory
         then
             log "$(dirname "${requested_path}")/.noread"
             echo "HTTP/1.1 200 OK"
@@ -189,16 +194,32 @@ function handle_connection {
             echo "<h3>I'm sorry, I'm afraid I can't let you see that</h3>";
             echo "<p>It seems that you tried to list a directory with a <code>.nolist</code> file in it, or a <code>.noread</code> file in it's parent, or a forbidden file type.</p>";
             echo "<p>If you think this was a mistake, I feel bad for you, son. I got 99 problems, but a 503 ain't one.</p>";
+            log "503: ${request[@]}"
+            exit 0;
         fi
         log "200: ${request[@]}"
         exit 0
     else
-        echo "HTTP/1.1 404 Not Found"
-        echo "Content-Type: text/html"
-        echo "${REPLY_HEADERS}"
-        printf "\r\n\r\n"
-        echo "<html><title>404</title><body>404, not found:<code>${request[1]}</code></body></html>"
-        log "404: ${request[@]}"
+        # If we were noread or nolist, send a 503, even though the resource doesn't even exist -- we don't want to leak what forbidden resources do and do not exist
+        if [[ ${can_read} = 1 || ${can_list} = 1 ]]; 
+        then
+            echo "HTTP/1.1 503 Not Found";
+            echo "Content-Type: text/html"
+            echo "${REPLY_HEADERS}"
+            printf "\r\n\r\n"
+            echo "<title>503 Forbidden</title>";
+            echo "<h3>I'm sorry, I'm afraid I can't let you see that</h3>";
+            echo "<p>It seems that you tried to list a directory with a <code>.nolist</code> file in it, or a <code>.noread</code> file in it's parent, or a forbidden file type.</p>";
+            echo "<p>If you think this was a mistake, I feel bad for you, son. I got 99 problems, but a 503 ain't one.</p>";
+            log "503: ${request[@]}"
+        else
+            echo "HTTP/1.1 404 Not Found"
+            echo "Content-Type: text/html"
+            echo "${REPLY_HEADERS}"
+            printf "\r\n\r\n"
+            echo "<html><title>404</title><body>404, not found:<code>${request[1]}</code></body></html>"
+            log "404: ${request[@]}"
+        fi
         exit 0
     fi
 }

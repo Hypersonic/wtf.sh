@@ -34,6 +34,7 @@ function create_user {
 
     mkdir users 2> /dev/null; # make sure users directory exists
     touch users/.nolist; # make sure that the users dir can't be listed
+    touch users/.noread; # don't allow reading of user files directly
 
     mkdir users_lookup 2> /dev/null; # make sure the username -> userid lookup directory exists
     touch users_lookup/.nolist; # don't let it be listed
