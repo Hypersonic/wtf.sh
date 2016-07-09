@@ -83,8 +83,8 @@ function handle_connection {
         done
     fi
 
-    request=($method $path $version)
-    path=$(echo $path | cut -d\? -f1) # strip url parameters
+    request=("$method" "$path" "$version")
+    path=$(urldecode $(echo $path | cut -d\? -f1)) # strip url parameters, urldecode
     requested_path=$(pwd)/${path}
 
     # parse headers
