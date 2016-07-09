@@ -1,7 +1,7 @@
 FROM ubuntu:14.04
 
 # dependencies
-RUN apt-get update && apt-get upgrade -y && apt-get install -y socat man gcc
+RUN apt-get update && apt-get upgrade -y && apt-get install -y socat gcc
 
 WORKDIR /opt/wtf.sh
 
