@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-PROFILE=false
+PROFILE=true
 # ~~ PROFILING ~~
 if [[ $PROFILE = true ]]
 then
@@ -54,7 +54,7 @@ function include_page {
             # execute the line.
             if [[ $is_script = 0 ]]
             then
-                cmd=$(printf "%s\n%s" "${cmd}" "${line#"$"}")
+                cmd+=$'\n'"${line#"$"}";
             else
                 if [[ -n $cmd ]]
                 then
