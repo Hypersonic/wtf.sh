@@ -148,6 +148,7 @@ function handle_connection {
         echo "${REPLY_HEADERS}"
         printf "\r\n\r\n"
         echo "<html><title>503</title><body>503 Forbidden</body></html>"
+        echo "<p>Sorry, directory traversal is strongly frowned upon here at wtf.sh enterprises</p>";
         log "503: ${request[@]}"
         exit 0; # terminate early for 503
     fi
