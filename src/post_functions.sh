@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-source lib.sh
-
 # Create a new post. Returns the post id.
 function create_post {
     local username=$1;

@@ -1,7 +1,5 @@
 #!/usr/local/bin/bash
 
-source lib.sh
-
 function hash_password {
     local password=$1;
     (shasum <<< ${password}) | cut -d\  -f1;
