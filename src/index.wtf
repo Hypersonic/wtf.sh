@@ -2,11 +2,11 @@ $ # vim: ft=wtf
 <html>
 $ source user_functions.sh
 <body>
-    <h1>Sick Forum Bro</h1>
-    <a href=/new_post.wtf>New Post</a>
+    <h1>Welcome to the wtf.sh Forums!</h1>
 $ if is_logged_in
 $ then
 $   echo "<p>Hi, ${COOKIES['USERNAME']}. <a href='/logout.wtf'>Logout</a> <a href='/profile.wtf?user=$(basename $(find_user_file ${COOKIES['USERNAME']}))'>Profile</a></p>"
+$   echo "<a href=/new_post.wtf>New Post</a>";
 $ else
 $   echo "<p>You're not logged in. <a href='/login.wtf'>Login</a> <a href='/new_user.wtf'>Register</a></p>"
 $ fi
