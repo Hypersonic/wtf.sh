@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-PROFILE=true
+PROFILE=false
 # ~~ PROFILING ~~
 if [[ $PROFILE = true ]]
 then
@@ -12,16 +12,28 @@ then
     set -x
 fi
 
+# sick facts about bash
+declare -a BASH_FACTS=(\
+    'Bash has an `until` keyword, which is equivalent to `while not`.' \
+    'Single and Double quotes do different things in bash -- single quotes do not interpolate variables, while double quotes do.' \
+    'When globbing on arrays in bash, you have the option to use [*] and [@], which appear to both return all the elements of the array. However, [*] acts like a "splat operator", while [@] keeps all everything constrained to the same argument.' \
+    'The bash array access syntax looks like ${array[$idx]}.' \
+    'If you forget the brackets in an array access, bash will just return the first element of the array.'
+    );
 
 source lib.sh # import stdlib
 
 VERSION="0.0.0.0.1 \"alphaest of bets\""
-REPLY_HEADERS="X-Powered-By: wtf.sh ${VERSION}"
+declare -a REPLY_HEADERS=(
+    "X-Powered-By: wtf.sh ${VERSION}" # Fly the banner of wtf.sh proudly!
+    "X-Bash-Facts: $(shuf -e "${BASH_FACTS[@]}" | head -n 1)" # select a random BASH FACT to include
+);
 
 declare -A URL_PARAMS # hashtable of url parameters
 declare -A POST_PARAMS # hashtable of post parameters
 declare -A HTTP_HEADERS # hashtable of http headers
 declare -A COOKIES # hashtable of cookies
+
 
 
 function log {
@@ -145,7 +157,9 @@ function handle_connection {
     then
         echo "HTTP/1.1 503 Forbidden"
         echo "Content-Type: text/html"
-        echo "${REPLY_HEADERS}"
+        for reply_header in "${REPLY_HEADERS[@]}"; do
+            echo "${reply_header}"
+        done
         printf "\r\n\r\n"
         echo "<html><title>503</title><body>503 Forbidden</body></html>"
         echo "<p>Sorry, directory traversal is strongly frowned upon here at wtf.sh enterprises</p>";
@@ -166,7 +180,10 @@ function handle_connection {
         then
             echo "HTTP/1.1 200 OK"
             echo "Content-Type: text/html"
-            echo "${REPLY_HEADERS}"
+            for reply_header in "${REPLY_HEADERS[@]}"; do
+                log "${reply_header}"
+                echo "${reply_header}"
+            done
             printf "\r\n\r\n"
             include_page ${requested_path};
         elif [[ -d ${requested_path} \
@@ -175,7 +192,9 @@ function handle_connection {
             log "$(dirname "${requested_path}")/.noread"
             echo "HTTP/1.1 200 OK"
             echo "Content-Type: text/html"
-            echo "${REPLY_HEADERS}"
+            for reply_header in "${REPLY_HEADERS[@]}"; do
+                echo "${reply_header}"
+            done
             printf "\r\n\r\n"
             echo "<h3>Index of ${request[1]}</h3>"
             echo "<ul>"
@@ -189,7 +208,9 @@ function handle_connection {
         else
             echo "HTTP/1.1 503 Forbidden"
             echo "Content-Type: text/html"
-            echo "${REPLY_HEADERS}"
+            for reply_header in "${REPLY_HEADERS[@]}"; do
+                echo "${reply_header}"
+            done
             printf "\r\n\r\n"
             echo "<title>503 Forbidden</title>";
             echo "<h3>I'm sorry, I'm afraid I can't let you see that</h3>";
@@ -206,7 +227,9 @@ function handle_connection {
         then
             echo "HTTP/1.1 503 Not Found";
             echo "Content-Type: text/html"
-            echo "${REPLY_HEADERS}"
+            for reply_header in "${REPLY_HEADERS[@]}"; do
+                echo "${reply_header}"
+            done
             printf "\r\n\r\n"
             echo "<title>503 Forbidden</title>";
             echo "<h3>I'm sorry, I'm afraid I can't let you see that</h3>";
@@ -216,7 +239,9 @@ function handle_connection {
         else
             echo "HTTP/1.1 404 Not Found"
             echo "Content-Type: text/html"
-            echo "${REPLY_HEADERS}"
+            for reply_header in "${REPLY_HEADERS[@]}"; do
+                echo "${reply_header}"
+            done
             printf "\r\n\r\n"
             echo "<html><title>404</title><body>404, not found:<code>${request[1]}</code></body></html>"
             log "404: ${request[@]}"
@@ -239,6 +264,9 @@ fi
 
 if [[ $1 == '-r' ]]
 then
+    for reply_header in "${REPLY_HEADERS[@]}"; do
+        log "${reply_header}";
+    done
     handle_connection
 else
     start_server $0 $1 # start server on specified port
