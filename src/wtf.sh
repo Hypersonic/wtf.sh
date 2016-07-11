@@ -18,7 +18,8 @@ declare -a BASH_FACTS=(\
     'Single and Double quotes do different things in bash -- single quotes do not interpolate variables, while double quotes do.' \
     'When globbing on arrays in bash, you have the option to use [*] and [@], which appear to both return all the elements of the array. However, [*] acts like a "splat operator", while [@] keeps all everything constrained to the same argument.' \
     'The bash array access syntax looks like ${array[$idx]}.' \
-    'If you forget the brackets in an array access, bash will just return the first element of the array.'
+    'If you forget the brackets in an array access, bash will just return the first element of the array.' \
+    "Bash didn't have Associative Arrays until Bash 4" \ 
     );
 
 source lib.sh # import stdlib
@@ -264,9 +265,6 @@ fi
 
 if [[ $1 == '-r' ]]
 then
-    for reply_header in "${REPLY_HEADERS[@]}"; do
-        log "${reply_header}";
-    done
     handle_connection
 else
     start_server $0 $1 # start server on specified port
