@@ -50,8 +50,6 @@ for i in ${!USERS[@]}; do
 done
 
 
-POST_IDS="";
-
 # create a bunch of posts in a randomish order
 echo "------------------------------------"
 echo "---------- CREATING POSTS ----------"
