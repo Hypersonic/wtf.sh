@@ -58,5 +58,5 @@ for k in {0..20}; do
 done \
     | shuf \
     | while read -r n user; do
-create_post "${user}" "$(random_text)" "$(random_text)";
+        echo "Created post with id $(create_post "${user}" "$(random_text)" "$(random_text)")";
     done
