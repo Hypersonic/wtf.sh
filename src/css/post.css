@@ -1,0 +1,18 @@
+.post {
+    padding-left: 10px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
+.post-poster {
+    display: block;
+}
+
+.post-title {
+    display: block;
+}
+
+.post-body {
+    display: block;
+    padding-left: 10px;
+}
