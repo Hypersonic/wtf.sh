@@ -76,6 +76,6 @@ done \
         reply "${post_id}" "${user}" "$(random_text)";
         echo "Added reply from ${user} to post ${post_id}" 1>&2;
     done
-done
+done 2>&1
 
 jobs
