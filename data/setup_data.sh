@@ -56,7 +56,7 @@ POST_IDS="";
 echo "------------------------------------"
 echo "---------- CREATING POSTS ----------"
 echo "------------------------------------"
-seq 0 $(random_digit) \
+(seq 0 $(random_digit) \
 | while read -r k; do
     for i in ${!USERS[@]}; do
         user=${USERS[$i]};
@@ -76,6 +76,6 @@ done \
         reply "${post_id}" "${user}" "$(random_text)";
         echo "Added reply from ${user} to post ${post_id}" 1>&2;
     done
-done 2>&1
+done) 2>&1
 
 jobs
