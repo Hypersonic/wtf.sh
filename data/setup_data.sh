@@ -30,6 +30,10 @@ function random_text {
     ${MYDIR}/markov.sh "${MYDIR}/hackers_lines/${line_file}"
 }
 
+function random_digit {
+    cat /dev/urandom | tr -dc '[:digit:]' | head -c 1;
+}
+
 
 echo "------------------------------------"
 echo "---------- CREATING USERS ----------"
@@ -46,17 +50,32 @@ for i in ${!USERS[@]}; do
 done
 
 
+POST_IDS="";
+
 # create a bunch of posts in a randomish order
 echo "------------------------------------"
 echo "---------- CREATING POSTS ----------"
 echo "------------------------------------"
-for k in {0..20}; do
+seq 0 $(random_digit) \
+| while read -r k; do
     for i in ${!USERS[@]}; do
         user=${USERS[$i]};
         echo "${k}" "${user}";
     done
 done \
-    | shuf \
-    | while read -r n user; do
-        echo "Created post with id $(create_post "${user}" "$(random_text)" "$(random_text)")";
+| shuf \
+| while read -r n user; do # create posts
+    post_id=$(create_post "${user}" "$(random_text)" "$(random_text)")
+    echo "Created post with id ${post_id}" 1>&2;
+    echo ${post_id}
+done \
+| while read -r post_id; do # reply to posts
+    seq 0 $(random_digit) \
+    | while read -r i; do
+        user=$(shuf -e "${USERS[@]}" | head -n 1);
+        reply "${post_id}" "${user}" "$(random_text)";
+        echo "Added reply from ${user} to post ${post_id}" 1>&2;
     done
+done
+
+jobs
