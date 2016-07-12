@@ -15,8 +15,8 @@ RUN adduser --disabled-password --gecos '' flag2
 
 
 # setup flags
-COPY ./flag1.txt /home/flag1/
-COPY ./flag2.txt /home/flag2/
+COPY ./data/flag1.txt /home/flag1/
+COPY ./data/flag2.txt /home/flag2/
 RUN chown -R root:root /home/flag1/
 RUN chown -R root:root /home/flag2/
 RUN chown root:flag1 /home/flag1/flag1.txt
@@ -44,18 +44,22 @@ RUN chmod 1733 /tmp /var/tmp /dev/shm
 
 # setup webapp
 COPY ./src /opt/wtf.sh
-COPY ./setup_data.sh /tmp/setup_data.sh
 COPY ./spinup.sh /opt/wtf.sh
+
+COPY ./data/ /tmp/data/
 
 RUN chown -R www /opt/wtf.sh
 RUN chmod -R 555 /opt/wtf.sh
 
-RUN /tmp/setup_data.sh
+RUN /tmp/data/setup_data.sh
 RUN chmod -R 777 /opt/wtf.sh/posts
 RUN chmod -R 777 /opt/wtf.sh/users
 
 RUN echo "tmpfs    /tmp/wtf_runtime    tmpfs    nodev,nosuid,size=1G    0    0" >> /etc/fstab
 
+
+# clear out /tmp/data, as it might contain flags (it should be cleaned at boot, but better safe than sorry)
+CMD rm -rf /tmp/data
 
 WORKDIR /tmp/wtf_runtime/wtf.sh
 CMD /opt/wtf.sh/spinup.sh

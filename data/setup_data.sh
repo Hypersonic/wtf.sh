@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+MYDIR="$(dirname $0)/";
+
+source lib.sh
 source user_functions.sh
 source post_functions.sh
 
@@ -20,6 +23,11 @@ USERS=("admin" \
 
 function random_password {
     cat /dev/urandom | tr -cd "[[:alnum:]]" | head -c 32;
+}
+
+function random_text {
+    line_file="$(ls "${MYDIR}/hackers_lines/" | shuf | head -n 1)";
+    ${MYDIR}/markov.sh "${MYDIR}/hackers_lines/${line_file}"
 }
 
 
@@ -50,5 +58,5 @@ for k in {0..20}; do
 done \
     | shuf \
     | while read -r n user; do
-        create_post "${user}" "My ${n}th post" "This is a post about some stuff yo";
+create_post "${user}" "$(random_text)" "$(random_text)";
     done
