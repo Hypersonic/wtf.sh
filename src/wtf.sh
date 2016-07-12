@@ -19,7 +19,8 @@ declare -a BASH_FACTS=(\
     'When globbing on arrays in bash, you have the option to use [*] and [@], which appear to both return all the elements of the array. However, [*] acts like a "splat operator", while [@] keeps all everything constrained to the same argument.' \
     'The bash array access syntax looks like ${array[$idx]}.' \
     'If you forget the brackets in an array access, bash will just return the first element of the array.' \
-    "Bash didn't have Associative Arrays until Bash 4" \ 
+    "Bash didn't have Associative Arrays until Bash 4" \
+    'The idomatic way of iterating over all the lines in a file in bash is `while read -r line; do <something with line>; done < <filename>`'
     );
 
 source lib.sh # import stdlib
@@ -27,7 +28,7 @@ source lib.sh # import stdlib
 VERSION="0.0.0.0.1 \"alphaest of bets\""
 declare -a REPLY_HEADERS=(
     "X-Powered-By: wtf.sh ${VERSION}" # Fly the banner of wtf.sh proudly!
-    "X-Bash-Facts: $(shuf -e "${BASH_FACTS[@]}" | head -n 1)" # select a random BASH FACT to include
+    "X-Bash-Fact: $(shuf -e "${BASH_FACTS[@]}" | head -n 1)" # select a random BASH FACT to include
 );
 
 declare -A URL_PARAMS # hashtable of url parameters
