@@ -183,7 +183,6 @@ function handle_connection {
             echo "HTTP/1.1 200 OK"
             echo "Content-Type: text/html"
             for reply_header in "${REPLY_HEADERS[@]}"; do
-                log "${reply_header}"
                 echo "${reply_header}"
             done
             printf "\r\n\r\n"
@@ -202,7 +201,6 @@ function handle_connection {
             echo "<ul>"
             for d in ${requested_path}/*; do
                 size_info=($(du -h ${requested_path} | tail -n 1))
-                log ${d}
                 echo "<li><a href="/${request[1]#"/"}${d}">${d}</a>: ${size_info[0]}</li>"
             done
             echo "</ul>"
