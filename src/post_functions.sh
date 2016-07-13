@@ -26,7 +26,7 @@ function create_post {
     echo "<li><a href=\"/post.wtf?post=${post_id}\">$(htmlentities <<< ${title})</a> by $(htmlentities <<< ${username})</li>" >> .index_cache.html
 
     # add post to users' post cache
-    echo "${post_id}" >> "users_lookup/${username}/posts";
+    echo "${post_id}/1" >> "users_lookup/${username}/posts";
 
     echo ${post_id};
 
@@ -44,5 +44,5 @@ function reply {
     echo "${text}" >> "${next_file}";
 
     # add post this is in reply to to posts cache
-    echo "${post_id}" >> "users_lookup/${username}/posts";
+    echo "${post_id}/${next_reply_id}" >> "users_lookup/${username}/posts";
 }

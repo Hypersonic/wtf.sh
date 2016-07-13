@@ -90,11 +90,6 @@ function get_users_posts {
     local username=$1;
     # we only have to iterate over posts a user has replied to
     while read -r post_id; do
-        for reply in posts/${post_id}/*; do
-            if [[ $(head -n 1 ${reply}) = "${username}" ]]
-            then
-                echo "${reply}";
-            fi
-        done
+        echo "posts/${post_id}";
     done < "users_lookup/${username}/posts";
 }
