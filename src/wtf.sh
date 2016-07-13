@@ -53,6 +53,8 @@ function include_page {
     # include_page <pathname>
     local pathname=$1
     local cmd=""
+    [[ "${pathname:(-4)}" = '.wtf' ]];
+    local can_execute=$?;
     page_include_depth=$(($page_include_depth+1))
     if [[ $page_include_depth -lt $max_page_include_depth ]]
     then
@@ -60,7 +62,7 @@ function include_page {
         while read -r line; do
             # check if we're in a script line or not ($ at the beginning implies script line)
             # also, our extension needs to be .wtf
-            [[ "$" = ${line:0:1} && ${pathname:(-4)} = '.wtf' ]]
+            [[ "$" = "${line:0:1}" && ${can_execute} = 0 ]];
             is_script=$?;
 
             # execute the line.
