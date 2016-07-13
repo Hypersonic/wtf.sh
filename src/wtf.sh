@@ -7,20 +7,21 @@ then
     for i in {0..100}; do
         echo '~~~~~~~~~~~~~~~~~~~~~~~~~~~' 1>&2;
     done
-    PS4='+ $(date "+%s.%N") (${FUNCNAME}:${LINENO})\011 '
-    exec 3>/tmp/bashprof.$$.log
+    PS4='+ $(date "+%s.%N") $(if [[ ${FUNCNAME} = "" ]]; then echo NONE; else echo "${FUNCNAME}"; fi ) ${LINENO}\011 '
+    exec 3>&2 2>bashprof.$$.log
     set -x
 fi
 
 # sick facts about bash
-declare -a BASH_FACTS=(\
-    'Bash has an `until` keyword, which is equivalent to `while not`.' \
-    'Single and Double quotes do different things in bash -- single quotes do not interpolate variables, while double quotes do.' \
-    'When globbing on arrays in bash, you have the option to use [*] and [@], which appear to both return all the elements of the array. However, [*] acts like a "splat operator", while [@] keeps all everything constrained to the same argument.' \
-    'The bash array access syntax looks like ${array[$idx]}.' \
-    'If you forget the brackets in an array access, bash will just return the first element of the array.' \
-    "Bash didn't have Associative Arrays until Bash 4" \
-    'The idomatic way of iterating over all the lines in a file in bash is `while read -r line; do <something with line>; done < <filename>`'
+declare -a BASH_FACTS=(
+    $'Bash has an `until` keyword, which is equivalent to `while not`.' 
+    $'Single and Double quotes do different things in bash -- single quotes do not interpolate variables, while double quotes do.' 
+    $'When globbing on arrays in bash, you have the option to use [*] and [@], which appear to both return all the elements of the array. However, [*] acts like a "splat operator", while [@] keeps all everything constrained to the same argument.' 
+    $'The bash array access syntax looks like ${array[$idx]}.' 
+    $'If you forget the brackets in an array access, bash will just return the first element of the array.' 
+    $'Bash didn\'t have Associative Arrays until Bash 4' 
+    $'The idomatic way of iterating over all the lines in a file in bash is `while read -r line; do <something with line>; done < <filename>`' 
+    $'Loops are just commands. So, you can pipe things into and out of them!'
     );
 
 source lib.sh # import stdlib
