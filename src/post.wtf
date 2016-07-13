@@ -9,7 +9,7 @@ $ if contains 'post' ${!URL_PARAMS[@]} && file_exists "posts/${URL_PARAMS['post'
 $ then
 $   post_id=${URL_PARAMS['post']};
 $   echo "<a href=\"/reply.wtf?post=${post_id}\">Reply</a>"
-$   for post_file in $(ls posts/${post_id}/* | sort -n); do
+$   for post_file in $(ls posts/${post_id}/* | sort --field-separator='/' --key=3 -n); do
 $       echo "<div class=\"post\">";
 $       poster=$(nth_line 1 ${post_file} | htmlentities);
 $       title=$(nth_line 2 ${post_file} | htmlentities);
