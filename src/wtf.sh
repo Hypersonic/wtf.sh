@@ -4,11 +4,8 @@ PROFILE=false
 # ~~ PROFILING ~~
 if [[ $PROFILE = true ]]
 then
-    for i in {0..100}; do
-        echo '~~~~~~~~~~~~~~~~~~~~~~~~~~~' 1>&2;
-    done
     PS4='+ $(date "+%s.%N") $(if [[ ${FUNCNAME} = "" ]]; then echo NONE; else echo "${FUNCNAME}"; fi ) ${LINENO}\011 '
-    exec 3>&2 2>bashprof.$$.log
+    exec 3>&2 2>/tmp/bashprof.$$.log
     set -x
 fi
 
@@ -91,7 +88,7 @@ function handle_connection {
     query=$(echo $path | cut -d\? -f2)
     if [[ $query != $path ]]
     then
-        params=($(echo $query | sed "s/\&/ /g"))
+        params=($(echo $query | tr '&' ' '))
         for param in ${params[@]}; do
             IFS='=' read key value <<< ${param};
             URL_PARAMS[$key]=$(urldecode $value)
