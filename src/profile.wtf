@@ -11,7 +11,7 @@ $       post_slug="$(cut -d/ -f2 <<< "${post}")#$(cut -d/ -f3 <<< "${post}")"
 $       echo "<li><a href=\"/post.wtf?post=${post_slug}\">$(nth_line 2 "${post}")</a></li>";
 $   done 
 $   echo "</ol>";
-$   if is_logged_in && [[ $(cat "users/${URL_PARAMS['user']}" | nth_line 1) = 'admin' ]] && [[ "${COOKIES['USERNAME']}" = 'admin' ]]
+$   if is_logged_in && [[ "${COOKIES['USERNAME']}" = 'admin' ]] && [[ $(cat "users/${URL_PARAMS['user']}" | nth_line 1) = 'admin' ]]
 $   then
 $       get_flag1
 $   fi
