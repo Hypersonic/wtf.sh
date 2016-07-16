@@ -6,7 +6,7 @@ declare -A chain;
 
 # generate a random number in [$1, $2]
 function random {
-    seq $1 $2 | shuf | head -n 1;
+    shuf --input-range=$1-$2 --head-count=1;
 }
 
 function add_data_to_chain {
