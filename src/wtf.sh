@@ -86,8 +86,8 @@ function include_page {
 function handle_connection {
 
     # Parse query and any url parameters that may be in the path
-    IFS=' ' read method path version
-    query=$(cut -d\? -f2 <<< "${path}")
+    IFS=' ' read -r method path version
+    query=${path##*\?};
     if [[ $query != $path ]]
     then
         params=($( tr '&' ' ' <<< "${query}"))
@@ -103,7 +103,7 @@ function handle_connection {
 
     # parse headers
     while read -r line; do
-        if [[ $line == `echo -n $'\r\n'` || $line == `echo -n $'\n'` ]]
+        if [[ $line = $'\r' || $line == $'\n' ]]
         then
             break
         else
