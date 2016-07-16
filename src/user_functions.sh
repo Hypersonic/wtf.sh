@@ -5,6 +5,12 @@ function hash_password {
     (shasum <<< ${password}) | cut -d\  -f1;
 }
 
+# hash usernames for lookup in the users_lookup table
+function hash_username {
+    local username=$1;
+    (shasum <<< ${username}) | cut -d\  -f1;
+}
+
 # generate a random token, base64 encoded
 # on GNU base64 wraps at 76 characters, so we need to pass --wrap=0
 function generate_token {
@@ -13,10 +19,11 @@ function generate_token {
 
 function find_user_file {
     local username=$1;
+    local hashed=$(hash_username "${username}");
     local f;
-    if [[ -n "${username}" && -e "users_lookup/${username}" ]]
+    if [[ -n "${username}" && -e "users_lookup/${hashed}" ]]
     then
-        echo "users/$(cat "users_lookup/${username}/userid")";
+        echo "users/$(cat "users_lookup/${hashed}/userid")";
     else
         echo "NONE"; # our failure case -- ugly but w/e...
     fi;
@@ -28,6 +35,7 @@ function create_user {
     local username=$1;
     local password=$2;
     local hashed_pass=$(hash_password ${password});
+    local hashed_username=$(hash_username "${username}");
     local token=$(generate_token);
 
     mkdir users 2> /dev/null; # make sure users directory exists
@@ -49,11 +57,11 @@ function create_user {
     echo "${token}" >> "users/${user_id}";
 
 
-    mkdir "users_lookup/${username}" 2> /dev/null;
-    touch "users_lookup/${username}/.nolist"; # lookup dir for this user can't be readable
-    touch "users_lookup/${username}/.noread"; # don't allow reading the lookup dir
-    touch "users_lookup/${username}/posts"; # lookup for posts this user has participated in
-    echo "${user_id}" > "users_lookup/${username}/userid"; # create reverse lookup
+    mkdir "users_lookup/${hashed_username}" 2> /dev/null;
+    touch "users_lookup/${hashed_username}/.nolist"; # lookup dir for this user can't be readable
+    touch "users_lookup/${hashed_username}/.noread"; # don't allow reading the lookup dir
+    touch "users_lookup/${hashed_username}/posts"; # lookup for posts this user has participated in
+    echo "${user_id}" > "users_lookup/${hashed_username}/userid"; # create reverse lookup
 
     echo ${user_id};
 }
@@ -88,8 +96,9 @@ function is_logged_in {
 
 function get_users_posts {
     local username=$1;
+    local hashed=$(hash_username "${username}");
     # we only have to iterate over posts a user has replied to
     while read -r post_id; do
         echo "posts/${post_id}";
-    done < "users_lookup/${username}/posts";
+    done < "users_lookup/${hashed}/posts";
 }
