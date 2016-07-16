@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-PROFILE=false
+PROFILE=true
 # ~~ PROFILING ~~
 if [[ $PROFILE = true ]]
 then
@@ -87,10 +87,10 @@ function handle_connection {
 
     # Parse query and any url parameters that may be in the path
     IFS=' ' read method path version
-    query=$(echo $path | cut -d\? -f2)
+    query=$(cut -d\? -f2 <<< "${path}")
     if [[ $query != $path ]]
     then
-        params=($(echo $query | tr '&' ' '))
+        params=($( tr '&' ' ' <<< "${query}"))
         for param in ${params[@]}; do
             IFS='=' read key value <<< ${param};
             URL_PARAMS[$key]=$(urldecode $value)
@@ -98,12 +98,12 @@ function handle_connection {
     fi
 
     request=("$method" "$path" "$version")
-    path=$(urldecode $(echo $path | cut -d\? -f1)) # strip url parameters, urldecode
+    path=$(urldecode $(cut -d\? -f1 <<< "${path}")) # strip url parameters, urldecode
     requested_path=$(pwd)/${path}
 
     # parse headers
     while read -r line; do
-        if [[ $line == `echo -n $'\x0d\x0a'` || $line == `echo -n $'\x0a'` ]]
+        if [[ $line == `echo -n $'\r\n'` || $line == `echo -n $'\n'` ]]
         then
             break
         else
@@ -118,7 +118,7 @@ function handle_connection {
     if contains "Cookie" "${!HTTP_HEADERS[@]}"
     then
         while read -d ';' -r cookie; do
-            local key=$(echo $cookie | cut -d\= -f1);
+            local key=$(cut -d\= -f1 <<< "${cookie}");
             local value=${cookie#*=};
             COOKIES[${key}]=${value};
         done <<< "${HTTP_HEADERS['Cookie']};" # append a ; so we still get the last field -- read drops the last thing >_<
@@ -131,7 +131,7 @@ function handle_connection {
         local n;
         n=${HTTP_HEADERS['Content-Length']};
         read -n$n -r line;
-        params=($(echo $line | sed "s/\&/ /g"))
+        params=($(sed "s/\&/ /g" <<< "${line}"))
         for param in ${params[@]}; do
             IFS='=' read key value <<< ${param};
             POST_PARAMS[$key]=$(urldecode $value)
@@ -154,7 +154,7 @@ function handle_connection {
 
     # check for possible directory traversals / other undesirable path elements by
     # removing them and 503-ing if the string was changed
-    test_path=$(echo ${requested_path} | sed "s/\.\.//g")
+    test_path=$(sed "s/\.\.//g" <<< "${requested_path}")
     if [[ ${test_path} != ${requested_path} ]]
     then
         echo "HTTP/1.1 503 Forbidden"
