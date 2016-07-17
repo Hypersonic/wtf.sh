@@ -11,14 +11,16 @@ touch .index_cache.html;
 chmod 777 .index_cache.html;
 
 # gotta get dem sick references in there somewhere :)
-USERS=("admin" \
+USERS=("admin"
        # Hackers
-       "Acid Burn" "Phantom Phreak" "The Plague" \
-       "Cereal Killer" "Zero Cool" \
+       "Acid Burn" "Phantom Phreak" "The Plague"
+       "Cereal Killer" "Zero Cool"
        # Ghost in the Shell
-       "The Laughing Man" "The Puppet Master" \
+       "The Laughing Man" "The Puppet Master"
        # The matrix
-       "Trinity" "Neo" "Morpheus" \
+       "Trinity" "Neo" "Morpheus"
+       # Kung Fury
+       "Hackerman"
        );
 
 function random_password {
