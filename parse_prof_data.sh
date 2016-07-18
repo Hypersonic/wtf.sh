@@ -14,8 +14,10 @@ declare -A TOT_TIME;
 n=0
 for file in ${LOGFILES[@]}; do
     n=$((n+1));
-    printf "[%3d/%d]\t%s\n" "${n}" "${#LOGFILES[@]}" "${file}" 1>&2;
+    num_files=${#LOGFILES[@]}
+    printf "\r[%${#num_files}d/%d]\t%s" "${n}" "${num_files}" "${file}" 1>&2;
     prevtime=0;
+    prevkey='none';
     while read -r depth starttime function line code; do
         depth=${#depth};
         # if we're on the first entry, we'll just count it as 0 time,
@@ -36,16 +38,18 @@ for file in ${LOGFILES[@]}; do
         #echo "---------------------------";
 
         key="${function}:${line}";
-        if [[ ${NUM_CALLS["${key}"]} = '' ]]
+        if [[ ${NUM_CALLS["${prevkey}"]} = '' ]]
         then
-            NUM_CALLS["${key}"]=1;
-            TOT_TIME["${key}"]=${duration}
+            NUM_CALLS["${prevkey}"]=1;
+            TOT_TIME["${prevkey}"]=${duration}
         else
-            NUM_CALLS["${key}"]=$(( ${NUM_CALLS["$key"]} + 1 ));
-            TOT_TIME["${key}"]=$(echo "${TOT_TIME["$key"]} + ${duration}" | bc );
+            NUM_CALLS["${prevkey}"]=$(( ${NUM_CALLS["$prevkey"]} + 1 ));
+            TOT_TIME["${prevkey}"]=$(echo "${TOT_TIME["$prevkey"]} + ${duration}" | bc );
         fi
+        prevkey="${key}";
     done < <(grep '^+' ${file})
 done
+printf "\n" 1>&2;
 
 
 
