@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-PROFILE=true
+PROFILE=false
 # ~~ PROFILING ~~
 if [[ $PROFILE = true ]]
 then
