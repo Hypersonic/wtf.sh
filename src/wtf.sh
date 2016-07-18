@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-PROFILE=false
+PROFILE=true
 # ~~ PROFILING ~~
 if [[ $PROFILE = true ]]
 then
@@ -26,7 +26,7 @@ source lib.sh # import stdlib
 VERSION="0.0.0.0.1 \"alphaest of bets\""
 declare -a REPLY_HEADERS=(
     "X-Powered-By: wtf.sh ${VERSION}" # Fly the banner of wtf.sh proudly!
-    "X-Bash-Fact: $(shuf -e "${BASH_FACTS[@]}" | head -n 1)" # select a random BASH FACT to include
+    "X-Bash-Fact: $(shuf --head-count=1 -e "${BASH_FACTS[@]}")" # select a random BASH FACT to include
 );
 
 declare -A URL_PARAMS # hashtable of url parameters
