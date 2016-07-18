@@ -87,9 +87,12 @@ function handle_connection {
 
     # Parse query and any url parameters that may be in the path
     IFS=' ' read -r method path version
-
+    # fast fail on empty request
+    if [[ ${method} = '' ]]
+    then
+        return
+    fi
     query=${path##*\?};
-
     if [[ $query != $path ]]
     then
         params=($( tr '&' ' ' <<< "${query}"))
@@ -255,7 +258,7 @@ function handle_connection {
 # start socat on specified port
 function start_server {
     echo "wtf.sh ${VERSION}, starting!";
-    socat TCP-LISTEN:$2,fork,readbytes=4096,backlog=256 EXEC:"$1 -r" 9>&1 | tee webserver.log
+    socat TCP-LISTEN:$2,fork,readbytes=4096,backlog=256 EXEC:"$1 -r",nonblock 9>&1 | tee webserver.log
     echo "Socket was occupied... try again later...";
 }
 
