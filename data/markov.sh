@@ -35,15 +35,19 @@ function generate_text_from_chain {
     # generate text
     output="";
     curr_token='STARTTOKEN';
-    until [[ ${curr_token} = 'ENDTOKEN' ]]; do
+    last_added="${curr_token}";
+    until [[ ${last_added} = 'ENDTOKEN' ]]; do
 		curr_token="${curr_token#"${curr_token%%[![:space:]]*}"}"   # remove leading whitespace characters
 		curr_token="${curr_token%"${curr_token##*[![:space:]]}"}"   # remove trailing whitespace characters
         choices=(${chain[$curr_token]});
         idx=$(random 0 $(( ${#choices[@]}-1 )) );
-        curr_token=${choices[$idx]};
-        if [[ $curr_token != 'ENDTOKEN' ]];
+        last_added=${choices[$idx]};
+        toks=(${curr_token})
+        second=${toks[1]};
+        if [[ ${last_added} != 'ENDTOKEN' ]];
         then
-            output+="${curr_token} ";
+            output+="${last_added} ";
+            curr_token="${second} ${last_added}"
         fi
     done
     echo $output
