@@ -1,6 +1,9 @@
 $ # vim: ft=wtf
 $ source user_functions.sh
 <html>
+<head>
+    <link rel="stylesheet" type="text/css" href="/css/std.css" >
+</head>
 $ if contains 'user' ${!URL_PARAMS[@]} && file_exists "users/${URL_PARAMS['user']}"
 $ then
 $   local username=$(head -n 1 users/${URL_PARAMS['user']});

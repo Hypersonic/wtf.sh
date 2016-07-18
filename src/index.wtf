@@ -1,6 +1,9 @@
 $ # vim: ft=wtf
 <html>
 $ source user_functions.sh
+<head>
+    <link rel="stylesheet" type="text/css" href="/css/std.css" >
+</head>
 <body>
     <h1>Welcome to the wtf.sh Forums!</h1>
 $ if is_logged_in

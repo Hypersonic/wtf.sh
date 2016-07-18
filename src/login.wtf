@@ -1,5 +1,8 @@
 $ # vim: ft=wtf
 <html>
+<head>
+    <link rel="stylesheet" type="text/css" href="/css/std.css" >
+</head>
 $ source user_functions.sh
 $ if [[ $method = 'POST' ]]
 $ then

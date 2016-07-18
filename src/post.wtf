@@ -1,6 +1,7 @@
 $ # vim: ft=wtf
 <html>
 <head>
+    <link rel="stylesheet" type="text/css" href="/css/std.css" >
     <link rel="stylesheet" type="text/css" href="/css/post.css" >
 </head>
 <body>
