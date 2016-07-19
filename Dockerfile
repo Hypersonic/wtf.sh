@@ -54,6 +54,7 @@ RUN chmod -R 555 /opt/wtf.sh
 RUN /tmp/data/setup_data.sh
 RUN chmod -R 777 /opt/wtf.sh/posts
 RUN chmod -R 777 /opt/wtf.sh/users
+RUN chmod -R 777 /opt/wtf.sh/users_lookup
 
 RUN echo "tmpfs    /tmp/wtf_runtime    tmpfs    nodev,nosuid,size=1G    0    0" >> /etc/fstab
 
