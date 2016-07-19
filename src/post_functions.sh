@@ -43,8 +43,8 @@ function reply {
     local hashed=$(hash_username "${username}");
 
     curr_id=$(for d in posts/${post_id}/*; do basename $d; done | sort -n | tail -n 1);
-    next_reply_id=$((${curr_id}+1));
-    next_file="posts/${post_id}/${next_reply_id}"
+    next_reply_id=$(awk '{print $1+1}' <<< "${curr_id}");
+    next_file=(posts/${post_id}/${next_reply_id});
     echo "${username}" > "${next_file}";
     echo "RE: $(nth_line 2 < "posts/${post_id}/1")" >> "${next_file}";
     echo "${text}" >> "${next_file}";
