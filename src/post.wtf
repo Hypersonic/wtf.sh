@@ -19,10 +19,14 @@ $       echo "<span class=\"post-title\">$title</span>";
 $       echo "<span class=\"post-body\">$body</span>";
 $       echo "</div>";
 $   done
-$   echo "<a href=\"/reply.wtf?post=${post_id}\">Reply</a>"
 $ else
 $   echo "Pls give a (valid) post id";
 $ fi;
+
+<div class="action-btns">
+$   echo "<a href=\"/reply.wtf?post=${post_id}\">Reply</a>"
 <a href="/">Back</a>
+</div>
+
 </body>
 </html>

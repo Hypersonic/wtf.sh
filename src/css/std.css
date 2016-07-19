@@ -1,10 +1,12 @@
 body {
-    color: white;
-    background-color: black;
+    color: #c0c0c0;
+    background-color: #101020;
 }
+
 a {
-    color: green;
+    color: #227700;
 }
+
 a:visited {
-    color: cyan;
+    color: #a00100;
 }
