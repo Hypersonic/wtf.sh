@@ -24,7 +24,7 @@ USERS=("admin"
        );
 
 function random_password {
-    cat /dev/urandom | tr -cd "[[:alnum:]]" | head -c 32;
+    (tr -cd "[:alnum:]" | head -c 32) < /dev/urandom;
 }
 
 function random_text {
@@ -33,7 +33,7 @@ function random_text {
 }
 
 function random_digit {
-    cat /dev/urandom | tr -dc '[:digit:]' | head -c 1;
+    (tr -cd "[:digit:]" | head -c 1) < /dev/urandom;
 }
 
 
