@@ -9,7 +9,7 @@ for n in 1 2; do
     touch "$FILE";
     echo "\`$ man $n wtf.sh\`" >> "$FILE";
     echo '```' >> "$FILE";
-    MANWIDTH=55 man -l "wtf.${n}" | cat >> "$FILE";
+    MANWIDTH=55 man -l "wtf.${n}" >> "$FILE";
     echo '```' >> "$FILE";
     echo "Created ${FILE}";
 done
