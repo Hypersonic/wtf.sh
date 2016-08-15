@@ -36,7 +36,7 @@ function redirect {
 # depending if we're on BSD or GNU coreutils
 YESTERDAY_CMD="";
 TOMORROW_CMD="";
-LC_ALL=C if date --help | grep "GNU" > /dev/null
+if date --help | grep "GNU" > /dev/null
 then
     # Using GNU date
     TOMORROW_CMD="date -d tomorrow";
