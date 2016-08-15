@@ -21,9 +21,9 @@ function nth_line {
     if [[ $# != 1 ]]
     then
         filename=$2;
-        (head -n $n | tail -n 1) < $filename;
+        sed "${n}q;d" < $filename;
     else
-        head -n $n | tail -n 1;
+        sed "${n}q;d"
     fi 2> /dev/null
 }
 
