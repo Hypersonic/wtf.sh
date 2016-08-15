@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 
+# config stuff
+PROCESS_LIMIT=512 # per connection
 PROFILE=false
+
 # ~~ PROFILING ~~
 if [[ $PROFILE = true ]]
 then
@@ -83,30 +86,7 @@ function include_page {
     fi
 }
 
-function handle_connection {
-
-    # Parse query and any url parameters that may be in the path
-    IFS=' ' read -r method path version
-    # fast fail on empty request
-    if [[ ${method} = '' ]]
-    then
-        return
-    fi
-    query=${path##*\?};
-    if [[ $query != $path ]]
-    then
-        params=($( tr '&' ' ' <<< "${query}"))
-        for param in ${params[@]}; do
-            IFS='=' read key value <<< ${param};
-            URL_PARAMS[$key]=$(urldecode $value)
-        done
-    fi
-
-    request=("$method" "$path" "$version")
-    path=$(urldecode $(cut -d\? -f1 <<< "${path}")) # strip url parameters, urldecode
-    requested_path=$(pwd)/${path}
-
-    # parse headers
+function parse_headers {
     while read -r line; do
         if [[ $line = $'\r' || $line == $'\n' ]]
         then
@@ -118,15 +98,48 @@ function handle_connection {
             HTTP_HEADERS[$key]=${value:0:-1}; # remove \r from end
         fi
     done
+}
+
+function parse_cookies {
+    while read -d ';' -r cookie; do
+        local key=$(cut -d\= -f1 <<< "${cookie}");
+        local value=${cookie#*=};
+        COOKIES[${key}]=${value};
+    done <<< "${HTTP_HEADERS['Cookie']};" # append a ; so we still get the last field -- read drops the last thing >_<
+}
+
+function handle_connection {
+    ulimit -u "${PROCESS_LIMIT}"; # limit num processes per connection
+
+    # Parse query and any url parameters that may be in the path
+    IFS=' ' read -r method path version
+
+    # fast fail on empty request
+    if [[ ${method} = '' ]]
+    then
+        return
+    fi
+
+    query=${path##*\?};
+    if [[ $query != $path ]]
+    then
+        while read -d '&' -r param; do
+            IFS='=' read key value <<< ${param};
+            URL_PARAMS[$key]=$(urldecode $value)
+        done <<< "${query}&" # add & so last argument is seen
+    fi
+
+    request=("$method" "$path" "$version")
+    path=$(urldecode $(cut -d\? -f1 <<< "${path}")) # strip url parameters, urldecode
+    requested_path=$(pwd)/${path}
+
+    # parse headers
+    parse_headers;
 
     # parse out cookie values, if they exist
     if contains "Cookie" "${!HTTP_HEADERS[@]}"
     then
-        while read -d ';' -r cookie; do
-            local key=$(cut -d\= -f1 <<< "${cookie}");
-            local value=${cookie#*=};
-            COOKIES[${key}]=${value};
-        done <<< "${HTTP_HEADERS['Cookie']};" # append a ; so we still get the last field -- read drops the last thing >_<
+        parse_cookies;
     fi
     
     if [[ $method == "POST" ]]
@@ -258,7 +271,7 @@ function handle_connection {
 # start socat on specified port
 function start_server {
     echo "wtf.sh ${VERSION}, starting!";
-    socat TCP-LISTEN:$2,fork,readbytes=4096,backlog=256 EXEC:"$1 -r" 9>&1
+    socat TCP-LISTEN:$2,fork,readbytes=4096,backlog=256,reuseaddr EXEC:"$1 -r" 9>&1
     echo "Socket was occupied... try again later...";
 }
 
