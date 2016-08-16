@@ -4,6 +4,9 @@
 PROCESS_LIMIT=512 # per connection
 PROFILE=false
 
+# shell options
+shopt -s extglob;
+
 # ~~ PROFILING ~~
 if [[ $PROFILE = true ]]
 then
@@ -131,7 +134,6 @@ function handle_connection {
 
     request=("$method" "$path" "$version")
     path=$(urldecode $(cut -d\? -f1 <<< "${path}")) # strip url parameters, urldecode
-    requested_path=$(pwd)/${path}
 
     # parse headers
     parse_headers;
@@ -155,6 +157,25 @@ function handle_connection {
             POST_PARAMS[$key]=$(urldecode $value)
         done
     fi
+
+    # if we know the IP (via an X-Forwarded-For header), stick the user in a sandbox
+    # (Cloudflare will fill in this IP in prod, we can also have nginx fill it in in dev if we want)
+    if contains "X-Forwarded-For" "${!HTTP_HEADERS[@]}"
+    then
+        sandbox_dir="$((cksum <<< ${HTTP_HEADERS["X-Forwarded-For"]}) | cut -d\  -f1).sandbox";
+        # create sandbox if it doesn't exist
+        if [[ ! -e "${sandbox_dir}" ]]
+        then
+            mkdir "${sandbox_dir}";
+            # copy anything that isn't itself a sandbox to the dir
+            cp -R !(*.sandbox) "${sandbox_dir}";
+        fi
+        cd "${sandbox_dir}";
+    else
+        log "WARNING: Not sandboxing: no X-Forwarded-For header found!"
+    fi
+
+    requested_path=$(pwd)/${path}
 
     # if a directory is requested, try each of the following, in order
     # index.wtf, index.html
