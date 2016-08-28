@@ -11,7 +11,7 @@ $   echo "<h3>${username}'s posts:</h3>";
 $   echo "<ol>";
 $   get_users_posts "${username}" | while read -r post; do
 $       post_slug=$(awk -F/ '{print $2 "#" $3}' <<< "${post}");
-$       echo "<li><a href=\"/post.wtf?post=${post_slug}\">$(nth_line 2 "${post}")</a></li>";
+$       echo "<li><a href=\"/post.wtf?post=${post_slug}\">$(nth_line 2 "${post}" | htmlentities)</a></li>";
 $   done 
 $   echo "</ol>";
 $   if is_logged_in && [[ "${COOKIES['USERNAME']}" = 'admin' ]] && [[ ${username} = 'admin' ]]
