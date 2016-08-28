@@ -8,7 +8,7 @@ function hash_password {
 # hash usernames for lookup in the users_lookup table
 function hash_username {
     local username=$1;
-    (cksum <<< ${username}) | cut -d\  -f1;
+    (shasum <<< ${username}) | cut -d\  -f1;
 }
 
 # generate a random token, base64 encoded
